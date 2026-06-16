@@ -1,22 +1,54 @@
 {
   "locations": [
     {
-      "id": "ancestral_hall",
-      "name": "祠堂",
-      "type": "interior",
-      "tags": ["family", "ritual", "night_sensitive"],
-      "risk": 40,
+      "id": "village_gate",
+      "name": "归魂村村口",
+      "type": "exterior",
+      "chapter_role": "opening_gate_and_exit_block",
+      "tags": ["fog", "boundary", "paper_money", "signal_dead_zone"],
+      "risk": 25,
+      "connected_to": ["river_bridge"],
+      "interactables": ["broken_boundary_stone", "village_notice_board", "qingqing_microphone"]
+    },
+    {
+      "id": "river_bridge",
+      "name": "河桥",
+      "type": "exterior",
+      "chapter_role": "death_site_and_first_conflict",
+      "tags": ["cold", "river", "drowning", "soul_incense"],
+      "risk": 45,
       "connected_to": ["village_gate", "old_house"],
-      "interactables": ["ancestral_table", "genealogy_book", "paper_figure"]
+      "interactables": ["oil_soaked_white_cloth", "muddy_grass_shoes", "student_id_necklace"]
     },
     {
       "id": "old_house",
-      "name": "老宅",
+      "name": "封家老宅",
       "type": "interior",
-      "tags": ["marriage", "memory", "locked_room"],
-      "risk": 35,
-      "connected_to": ["ancestral_hall", "river_bridge"],
-      "interactables": ["red_thread", "wooden_box", "old_mirror"]
+      "chapter_role": "motive_and_crime_background",
+      "tags": ["marriage", "memory", "locked_room", "kidnapping"],
+      "risk": 55,
+      "connected_to": ["river_bridge", "opera_stage", "ancestral_hall"],
+      "interactables": ["blood_red_wedding_dress", "basement_chains", "ghost_marriage_contract", "village_chief_ledger"]
+    },
+    {
+      "id": "opera_stage",
+      "name": "荒废戏台",
+      "type": "semi_exterior",
+      "chapter_role": "rule_reveal_and_key_item",
+      "tags": ["opera", "paper_dolls", "shadow_play", "craft_secret"],
+      "risk": 65,
+      "connected_to": ["old_house", "ancestral_hall"],
+      "interactables": ["paper_craftsman_toolbox", "paper_craft_testament", "shadow_play_screen", "ancestral_hall_back_key"]
+    },
+    {
+      "id": "ancestral_hall",
+      "name": "封氏祠堂",
+      "type": "interior",
+      "chapter_role": "final_confrontation",
+      "tags": ["family", "ritual", "night_sensitive", "clan_contract", "paper_bride"],
+      "risk": 85,
+      "connected_to": ["opera_stage", "old_house"],
+      "interactables": ["paper_bride_body", "feng_genealogy_book", "cinnabar_brush", "white_candles"]
     }
   ]
 }

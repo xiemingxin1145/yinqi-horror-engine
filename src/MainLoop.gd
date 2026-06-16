@@ -24,6 +24,7 @@ func _ready() -> void:
     GameState.set_value("player.clue_pressure", 12)
 
     var location_result := LocationController.enter_location("ancestral_hall")
+    var map_skin_result := MapSkinDirector.apply_location_skin("ancestral_hall")
     var inspect_result := InteractionController.inspect_item("paper_figure")
     var taboo_result := InteractionController.perform_item_action("paper_figure", "paint_eye")
     var storyline_result := StorylineEngine.evaluate_open_threads()
@@ -39,6 +40,7 @@ func _ready() -> void:
         world,
         case_data,
         location_result,
+        map_skin_result,
         inspect_result,
         taboo_result,
         storyline_result,
@@ -49,7 +51,7 @@ func _ready() -> void:
         executed_commands
     )
 
-func _build_text(world: Dictionary, case_data: Dictionary, location_result: Dictionary, inspect_result: Dictionary, taboo_result: Dictionary, storyline_result: Dictionary, director_state: Dictionary, npc_plans: Array, engine_summary: Dictionary, render_commands: Array, executed_commands: Array) -> String:
+func _build_text(world: Dictionary, case_data: Dictionary, location_result: Dictionary, map_skin_result: Dictionary, inspect_result: Dictionary, taboo_result: Dictionary, storyline_result: Dictionary, director_state: Dictionary, npc_plans: Array, engine_summary: Dictionary, render_commands: Array, executed_commands: Array) -> String:
     var summary := DataRegistry.summary()
     var plans := []
     for plan in npc_plans:
@@ -59,12 +61,13 @@ func _build_text(world: Dictionary, case_data: Dictionary, location_result: Dict
     for item in location_result.get("interactables", []):
         interactable_names.append(item.get("name", item.get("id", "unknown")))
 
-    return "《阴契》Engine Matrix Loop V0.2\n\nEngineHub %s\nData %s\nWorld %s\nCase %s\n\nLocation %s\nInteractables %s\nInspect %s\nTaboo %s\nStorylines %s\n\nDirector %s intensity=%s events=%s\nRenderCommands %s\nExecutedEffects %s\nNPC %s\nFlags %s\nClues %s\n\nEvents\n%s" % [
+    return "《阴契》Engine Matrix Loop V0.3\n\nEngineHub %s\nData %s\nWorld %s\nCase %s\n\nLocation %s\nMapSkin %s\nInteractables %s\nInspect %s\nTaboo %s\nStorylines %s\n\nDirector %s intensity=%s events=%s\nRenderCommands %s\nExecutedEffects %s\nNPC %s\nFlags %s\nClues %s\n\nEvents\n%s" % [
         engine_summary,
         summary,
         world.get("name", "world"),
         case_data.get("title", "case"),
         location_result.get("location", {}).get("name", "unknown"),
+        map_skin_result.get("skin", {}).get("name", "no_skin"),
         ", ".join(interactable_names),
         inspect_result,
         taboo_result,

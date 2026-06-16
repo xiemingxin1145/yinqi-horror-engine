@@ -1,0 +1,150 @@
+{
+  "project": "阴契",
+  "version": "v0.3_FIXED",
+  "source": "阴契-视觉素材标准清单-v0.3.md",
+  "counts": {
+    "backgrounds": 17,
+    "characters": 20,
+    "icons": 18,
+    "total": 55
+  },
+  "assets": [
+    {
+      "category": "background",
+      "file": "bg_village_gate_front_view.png",
+      "path": "assets/backgrounds/bg_village_gate_front_view.png",
+      "size": "1920x1080",
+      "alpha": false,
+      "description": "归魂村村口·正视：界碑与公示栏：雾气里立着归魂村界碑和一块旧公示栏。"
+    },
+    {
+      "category": "background",
+      "file": "bg_village_gate_left_view.png",
+      "path": "assets/backgrounds/bg_village_gate_left_view.png",
+      "size": "1920x1080",
+      "alpha": false,
+      "description": "归魂村村口·左视：荒草与电瓶车：半人高的荒草中歪倒着一辆报废的电瓶车，没有可调查物，纯氛围。"
+    },
+    {
+      "category": "background",
+      "file": "bg_village_gate_right_view.png",
+      "path": "assets/backgrounds/bg_village_gate_right_view.png",
+      "size": "1920x1080",
+      "alpha": false,
+      "description": "归魂村村口·右视：土路尽头：土路延伸进浓雾，路边散落着一支还在录音的麦克风。"
+    },
+    {
+      "category": "background",
+      "file": "bg_river_bridge_bridge_head.png",
+      "path": "assets/backgrounds/bg_river_bridge_bridge_head.png",
+      "size": "1920x1080",
+      "alpha": false,
+      "description": "河桥·桥头：引魂香：巨大的引魂香还在燃烧，封大强蹲在香炉边喃喃自语。"
+    },
+    {
+      "category": "background",
+      "file": "bg_river_bridge_bridge_middle.png",
+      "path": "assets/backgrounds/bg_river_bridge_bridge_middle.png",
+      "size": "1920x1080",
+      "alpha": false,
+      "description": "河桥·桥中：脚印：桥面散落着一双泥草鞋，脚印杂乱地指向河心。"
+    },
+    {
+      "category": "background",
+      "file": "bg_river_bridge_bridge_railing.png",
+      "path": "assets/backgrounds/bg_river_bridge_bridge_railing.png",
+      "size": "1920x1080",
+      "alpha": false,
+      "description": "河桥·桥栏边：白布与黑水：栏杆上挂着浸水的白布条，桥下河水漆黑不流转。"
+    },
+    {
+      "category": "background",
+      "file": "bg_old_house_main_hall.png",
+      "path": "assets/backgrounds/bg_old_house_main_hall.png",
+      "size": "1920x1080",
+      "alpha": false,
+      "description": "封家老宅·正堂：嫁衣与棺材：正堂中央挂着血迹斑斑的红嫁衣，天井停着糊满喜字的空棺。"
+    },
+    {
+      "category": "background",
+      "file": "bg_old_house_side_room.png",
+      "path": "assets/backgrounds/bg_old_house_side_room.png",
+      "size": "1920x1080",
+      "alpha": false,
+      "description": "封家老宅·偏房：地下室：偏房地板有一道暗门，通往关押过林晚秋的地下室。"
+    },
+    {
+      "category": "background",
+      "file": "bg_old_house_hidden_compartment.png",
+      "path": "assets/backgrounds/bg_old_house_hidden_compartment.png",
+      "size": "1920x1080",
+      "alpha": false,
+      "description": "封家老宅·暗格：聘书与账本：正堂暗格里藏着阴婚聘书和村长的拐卖账本。"
+    },
+    {
+      "category": "background",
+      "file": "bg_old_house_courtyard.png",
+      "path": "assets/backgrounds/bg_old_house_courtyard.png",
+      "size": "1920x1080",
+      "alpha": false,
+      "description": "封家老宅·天井：苏青青的痕迹：天井角落能听见手机直播提示音，主播本人却不见踪影。"
+    },
+    {
+      "category": "background",
+      "file": "bg_opera_stage_stage_front.png",
+      "path": "assets/backgrounds/bg_opera_stage_stage_front.png",
+      "size": "1920x1080",
+      "alpha": false,
+      "description": "荒废戏台·戏台正面：无面纸人：一排扎好的无面纸人正面朝下坐着，没有可调查的具体物品，纯压迫氛围。"
+    },
+    {
+      "category": "background",
+      "file": "bg_opera_stage_curtain_view.png",
+      "path": "assets/backgrounds/bg_opera_stage_curtain_view.png",
+      "size": "1920x1080",
+      "alpha": false,
+      "description": "荒废戏台·幕布：皮影重演：手电照向幕布，会自动投出溺水那夜的皮影戏画面。"
+    },
+    {
+      "category": "background",
+      "file": "bg_opera_stage_toolbox_view.png",
+      "path": "assets/backgrounds/bg_opera_stage_toolbox_view.png",
+      "size": "1920x1080",
+      "alpha": false,
+      "description": "荒废戏台·工具箱：遗书与钥匙：九叔的工具箱里有《扎纸遗书》和祠堂后门钥匙。"
+    },
+    {
+      "category": "background",
+      "file": "bg_ancestral_hall_altar_view.png",
+      "path": "assets/backgrounds/bg_ancestral_hall_altar_view.png",
+      "size": "1920x1080",
+      "alpha": false,
+      "description": "封氏祠堂·供桌：族谱与法器：供桌上摆着封氏族谱、朱砂笔和白蜡烛，准备用来完成最后的仪式。"
+    },
+    {
+      "category": "background",
+      "file": "bg_ancestral_hall_paper_bride_view.png",
+      "path": "assets/backgrounds/bg_ancestral_hall_paper_bride_view.png",
+      "size": "1920x1080",
+      "alpha": false,
+      "description": "封氏祠堂·纸新娘：大厅中央停放着骨架中空的纸新娘，眼眶钉着玉蝉。"
+    },
+    {
+      "category": "background",
+      "file": "bg_ancestral_hall_clan_view.png",
+      "path": "assets/backgrounds/bg_ancestral_hall_clan_view.png",
+      "size": "1920x1080",
+      "alpha": false,
+      "description": "封氏祠堂·村长与族人：村长封建德与闭眼村民围在祠堂两侧。"
+    },
+    {
+      "category": "background",
+      "file": "bg_ancestral_hall_back_exit_view.png",
+      "path": "assets/backgrounds/bg_ancestral_hall_back_exit_view.png",
+      "size": "1920x1080",
+      "alpha": false,
+      "description": "封氏祠堂·后门退路：后门通向黑暗寒泉，雾气从门缝里涌出。"
+    }
+  ],
+  "note": "Full v0.3 asset pack contains 55 PNG slots. This manifest first pins stable paths for Godot integration; binary PNG import is handled separately."
+}

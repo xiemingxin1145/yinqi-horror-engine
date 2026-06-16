@@ -1,0 +1,93 @@
+{
+  "map_skins": [
+    {
+      "id": "ancestral_hall",
+      "location": "ancestral_hall",
+      "name": "祠堂夜祭皮肤",
+      "palette": {
+        "background": "#120B08",
+        "ambient": "#15100C",
+        "overlay": "#00000066",
+        "light": "#FFB35A"
+      },
+      "layers": [
+        {"type": "backdrop", "name": "黑木墙影", "rect": [0, 0, 1280, 720], "color": "#120B08"},
+        {"type": "panel", "name": "神龛暗影", "rect": [420, 120, 440, 360], "color": "#26130C"},
+        {"type": "prop", "name": "香案", "rect": [360, 480, 560, 90], "color": "#3A2117"},
+        {"type": "prop", "name": "纸人位", "rect": [930, 260, 90, 220], "color": "#BBAA8A"},
+        {"type": "foreground", "name": "门框压暗", "rect": [0, 0, 90, 720], "color": "#050403AA"},
+        {"type": "foreground", "name": "右侧柱影", "rect": [1190, 0, 90, 720], "color": "#050403AA"}
+      ],
+      "lights": [
+        {"id": "altar_lamp", "position": [640, 310], "energy": 0.9, "scale": 3.6, "color": "#FFB35A"},
+        {"id": "side_candle", "position": [920, 460], "energy": 0.45, "scale": 1.8, "color": "#E88B45"}
+      ],
+      "particles": ["paper_ash", "incense_smoke"],
+      "ambient_tags": ["wood", "incense", "ancestral", "night"]
+    },
+    {
+      "id": "old_house",
+      "location": "old_house",
+      "name": "老宅残婚皮肤",
+      "palette": {
+        "background": "#0B0D10",
+        "ambient": "#101116",
+        "overlay": "#00000077",
+        "light": "#B34B3C"
+      },
+      "layers": [
+        {"type": "backdrop", "name": "破墙冷影", "rect": [0, 0, 1280, 720], "color": "#0B0D10"},
+        {"type": "panel", "name": "旧婚房", "rect": [250, 120, 780, 430], "color": "#17151A"},
+        {"type": "prop", "name": "红帐残影", "rect": [610, 150, 240, 260], "color": "#5A1515AA"},
+        {"type": "prop", "name": "断红线", "rect": [350, 480, 520, 16], "color": "#9C2F2FAA"}
+      ],
+      "lights": [
+        {"id": "red_lantern", "position": [780, 210], "energy": 0.7, "scale": 2.8, "color": "#B34B3C"}
+      ],
+      "particles": ["dust_burst"],
+      "ambient_tags": ["marriage", "dust", "memory", "locked_room"]
+    },
+    {
+      "id": "river_bridge",
+      "location": "river_bridge",
+      "name": "河桥冷雾皮肤",
+      "palette": {
+        "background": "#061014",
+        "ambient": "#08161A",
+        "overlay": "#00000055",
+        "light": "#7AB0C0"
+      },
+      "layers": [
+        {"type": "backdrop", "name": "夜河", "rect": [0, 0, 1280, 720], "color": "#061014"},
+        {"type": "panel", "name": "桥面", "rect": [200, 430, 880, 80], "color": "#1A2728"},
+        {"type": "foreground", "name": "水雾", "rect": [0, 320, 1280, 220], "color": "#8BC4D022"}
+      ],
+      "lights": [
+        {"id": "cold_moon", "position": [880, 130], "energy": 0.6, "scale": 4.2, "color": "#7AB0C0"}
+      ],
+      "particles": ["mist", "rain_loop"],
+      "ambient_tags": ["water", "fog", "cold", "bridge"]
+    },
+    {
+      "id": "opera_stage",
+      "location": "opera_stage",
+      "name": "戏台红幕皮肤",
+      "palette": {
+        "background": "#16090B",
+        "ambient": "#190C0F",
+        "overlay": "#00000066",
+        "light": "#D25A46"
+      },
+      "layers": [
+        {"type": "backdrop", "name": "戏台黑场", "rect": [0, 0, 1280, 720], "color": "#16090B"},
+        {"type": "panel", "name": "红幕", "rect": [270, 80, 740, 430], "color": "#4D1117"},
+        {"type": "prop", "name": "戏台地板", "rect": [180, 520, 920, 80], "color": "#2D1711"}
+      ],
+      "lights": [
+        {"id": "stage_lamp", "position": [640, 230], "energy": 0.85, "scale": 3.4, "color": "#D25A46"}
+      ],
+      "particles": ["dust_burst"],
+      "ambient_tags": ["opera", "curtain", "stage", "echo"]
+    }
+  ]
+}

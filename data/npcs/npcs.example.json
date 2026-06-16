@@ -1,0 +1,24 @@
+{
+  "npcs": [
+    {
+      "id": "village_head",
+      "name": "村长",
+      "role": "authority",
+      "tags": ["family", "secret_keeper"],
+      "base_fear": 20,
+      "base_trust": 35,
+      "home_location": "old_house",
+      "memory_tags": ["family_history", "ancestral_hall"]
+    },
+    {
+      "id": "paper_master",
+      "name": "纸扎匠",
+      "role": "craftsman",
+      "tags": ["paper_figure", "ritual", "secret_keeper"],
+      "base_fear": 45,
+      "base_trust": 20,
+      "home_location": "village_gate",
+      "memory_tags": ["paper_figure", "taboo"]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+; Engine configuration file.
+; Edit with Godot 4.x.
+
+config_version=5
+
+[application]
+config/name="Yinqi Horror Engine"
+run/main_scene="res://scenes/Main.tscn"
+config/features=PackedStringArray("4.2", "Mobile")
+config/icon="res://icon.svg"
+
+[autoload]
+WorldSim="*res://src/world_sim/WorldSim.gd"
+NPCMemory="*res://src/npc_memory/NPCMemory.gd"
+FolkloreRules="*res://src/folklore_rules/FolkloreRules.gd"
+HorrorDirector="*res://src/horror_director/HorrorDirector.gd"
+GhostGenerator="*res://src/ghost_generator/GhostGenerator.gd"
+NarrativeEngine="*res://src/narrative/NarrativeEngine.gd"
+
+[display]
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/handheld/orientation=1
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+
+[rendering]
+renderer/rendering_method="mobile"
+textures/canvas_textures/default_texture_filter=0

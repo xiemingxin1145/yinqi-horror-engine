@@ -13,78 +13,60 @@ permissions:
 jobs:
   web-export:
     runs-on: ubuntu-latest
-    container:
-      image: barichello/godot-ci:4.2.2
-    timeout-minutes: 25
-    env:
-      GODOT_VERSION: 4.2.2
-      GODOT_RELEASE: stable
-      EXPORT_PRESET: Web
-      EXPORT_OUTPUT: build/web/index.html
+    timeout-minutes: 35
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Show Godot version
+      - name: Install Blender for Godot importer
         run: |
           set -eu
-          which godot
-          godot --version
-          echo "HOME=${HOME}"
+          sudo apt-get update -qq
+          sudo apt-get install -y blender
+          which blender
+          blender --version | head -n 2
+          echo "Blend files in repository, if any:"
+          find . -name '*.blend' -print || true
 
-      - name: Prepare export templates for GitHub Actions home
+      - name: Configure Godot editor settings
         run: |
           set -eu
-          TARGET="${HOME}/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_RELEASE}"
-          mkdir -p "${TARGET}"
+          mkdir -p "${HOME}/.config/godot"
+          cat > "${HOME}/.config/godot/editor_settings-4.tres" <<'EOF'
+          [gd_resource type="EditorSettings" format=3]
 
-          if [ -d "/root/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_RELEASE}" ]; then
-            cp -r "/root/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_RELEASE}/." "${TARGET}/"
-          elif [ -d "/root/.local/share/godot/templates/${GODOT_VERSION}.${GODOT_RELEASE}" ]; then
-            cp -r "/root/.local/share/godot/templates/${GODOT_VERSION}.${GODOT_RELEASE}/." "${TARGET}/"
-          elif [ -d "/root/.local/share/godot/export_templates" ]; then
-            FOUND_DIR=$(find /root/.local/share/godot/export_templates -maxdepth 2 -type f -name 'web_release.zip' -print -quit | xargs -r dirname)
-            if [ -n "${FOUND_DIR:-}" ]; then
-              cp -r "${FOUND_DIR}/." "${TARGET}/"
-            fi
-          fi
+          [resource]
+          filesystem/import/blender/blender_path = "/usr/bin/blender"
+          EOF
+          cat "${HOME}/.config/godot/editor_settings-4.tres"
 
-          if [ ! -f "${TARGET}/web_release.zip" ]; then
-            echo "Built-in templates not found in container; downloading export templates."
-            TEMPLATE_ZIP="Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_export_templates.tpz"
-            curl -fL --retry 3 --retry-delay 5 "https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/${TEMPLATE_ZIP}" -o templates.tpz
-            mkdir -p templates_zip
-            unzip -q templates.tpz -d templates_zip
-            cp -r templates_zip/templates/. "${TARGET}/"
-          fi
+      - name: Export Web build with Godot
+        id: export
+        uses: firebelley/godot-export@v8.0.0
+        with:
+          godot_executable_download_url: https://downloads.tuxfamily.org/godotengine/4.2.2/Godot_v4.2.2-stable_linux.x86_64.zip
+          godot_export_templates_download_url: https://downloads.tuxfamily.org/godotengine/4.2.2/Godot_v4.2.2-stable_export_templates.tpz
+          relative_project_path: ./
+          presets_to_export: Web
+          export_debug: false
+          archive_output: true
+          use_preset_export_path: true
+          cache: true
+          verbose: true
 
-          ls -la "${TARGET}"
-          test -f "${TARGET}/web_release.zip"
-          test -f "${TARGET}/web_debug.zip"
-
-      - name: Validate export preset exists
+      - name: Show exported files
         run: |
           set -eu
-          test -f export_presets.cfg
-          grep -q 'name="Web"' export_presets.cfg
-
-      - name: Import project in headless mode
-        run: |
-          set -eu
-          godot --headless --path . --import --quit
-
-      - name: Export Web build
-        run: |
-          set -eu
-          mkdir -p build/web
-          godot --headless --path . --export-release "${EXPORT_PRESET}" "${EXPORT_OUTPUT}"
-          test -f "${EXPORT_OUTPUT}"
-          find build/web -maxdepth 2 -type f | sort
+          echo "Build directory: ${{ steps.export.outputs.build_directory }}"
+          echo "Archive directory: ${{ steps.export.outputs.archive_directory }}"
+          find "${{ steps.export.outputs.build_directory }}" -maxdepth 3 -type f | sort || true
+          find "${{ steps.export.outputs.archive_directory }}" -maxdepth 3 -type f | sort || true
 
       - name: Upload Web artifact
-        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: yinqi-web-export
-          path: build/web
+          path: |
+            ${{ steps.export.outputs.build_directory }}
+            ${{ steps.export.outputs.archive_directory }}
           if-no-files-found: error

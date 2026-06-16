@@ -13,7 +13,7 @@ permissions:
 jobs:
   web-export:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     env:
       GODOT_VERSION: 4.2.2
       GODOT_RELEASE: stable
@@ -27,21 +27,32 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y unzip wget ca-certificates libfontconfig1 libxkbcommon0 libx11-6 libxcursor1 libxinerama1 libxrandr2 libxi6 libgl1
+          sudo apt-get install -y unzip curl ca-certificates libfontconfig1 libxkbcommon0 libx11-6 libxcursor1 libxinerama1 libxrandr2 libxi6 libgl1
 
       - name: Download Godot headless binary
         run: |
           set -euxo pipefail
-          wget -q "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-${GODOT_RELEASE}/Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_linux.x86_64.zip" -O godot.zip
+          GODOT_ZIP="Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_linux.x86_64.zip"
+          PRIMARY_URL="https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-${GODOT_RELEASE}/${GODOT_ZIP}"
+          FALLBACK_URL="https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/${GODOT_ZIP}"
+          echo "Trying primary Godot download: ${PRIMARY_URL}"
+          curl -fL --retry 3 --retry-delay 5 "${PRIMARY_URL}" -o godot.zip || \
+            curl -fL --retry 3 --retry-delay 5 "${FALLBACK_URL}" -o godot.zip
           unzip -q godot.zip -d godot-bin
-          mv godot-bin/Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_linux.x86_64 ${GODOT_BIN}
-          chmod +x ${GODOT_BIN}
-          ./${GODOT_BIN} --version
+          find godot-bin -maxdepth 1 -type f -print
+          mv "godot-bin/Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_linux.x86_64" "${GODOT_BIN}"
+          chmod +x "${GODOT_BIN}"
+          ./"${GODOT_BIN}" --version
 
       - name: Install Godot export templates
         run: |
           set -euxo pipefail
-          wget -q "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-${GODOT_RELEASE}/Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_export_templates.tpz" -O templates.tpz
+          TEMPLATE_ZIP="Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_export_templates.tpz"
+          PRIMARY_URL="https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-${GODOT_RELEASE}/${TEMPLATE_ZIP}"
+          FALLBACK_URL="https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/${TEMPLATE_ZIP}"
+          echo "Trying primary template download: ${PRIMARY_URL}"
+          curl -fL --retry 3 --retry-delay 5 "${PRIMARY_URL}" -o templates.tpz || \
+            curl -fL --retry 3 --retry-delay 5 "${FALLBACK_URL}" -o templates.tpz
           mkdir -p "${HOME}/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_RELEASE}"
           unzip -q templates.tpz -d templates_zip
           cp -r templates_zip/templates/* "${HOME}/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_RELEASE}/"
@@ -55,18 +66,18 @@ jobs:
       - name: Import project in headless mode
         run: |
           set -euxo pipefail
-          ./${GODOT_BIN} --headless --path . --import --quit
+          ./"${GODOT_BIN}" --headless --path . --import --quit
 
       - name: Export Web build
         run: |
           set -euxo pipefail
           mkdir -p build/web
-          ./${GODOT_BIN} --headless --path . --export-release "${EXPORT_PRESET}" "${EXPORT_OUTPUT}"
+          ./"${GODOT_BIN}" --headless --path . --export-release "${EXPORT_PRESET}" "${EXPORT_OUTPUT}"
           test -f "${EXPORT_OUTPUT}"
           find build/web -maxdepth 2 -type f | sort
 
       - name: Upload Web artifact
-        if: always()
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: yinqi-web-export

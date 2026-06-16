@@ -10,6 +10,9 @@ config/features=PackedStringArray("4.2", "Mobile")
 config/icon="res://icon.svg"
 
 [autoload]
+EventBus="*res://src/core/EventBus.gd"
+GameState="*res://src/core/GameState.gd"
+DataRegistry="*res://src/core/DataRegistry.gd"
 WorldSim="*res://src/world_sim/WorldSim.gd"
 NPCMemory="*res://src/npc_memory/NPCMemory.gd"
 FolkloreRules="*res://src/folklore_rules/FolkloreRules.gd"

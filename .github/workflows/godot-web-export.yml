@@ -1,0 +1,74 @@
+name: Godot Headless Web Export
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  web-export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GODOT_VERSION: 4.2.2
+      GODOT_RELEASE: stable
+      GODOT_BIN: godot
+      EXPORT_PRESET: Web
+      EXPORT_OUTPUT: build/web/index.html
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y unzip wget ca-certificates libfontconfig1 libxkbcommon0 libx11-6 libxcursor1 libxinerama1 libxrandr2 libxi6 libgl1
+
+      - name: Download Godot headless binary
+        run: |
+          set -euxo pipefail
+          wget -q "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-${GODOT_RELEASE}/Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_linux.x86_64.zip" -O godot.zip
+          unzip -q godot.zip -d godot-bin
+          mv godot-bin/Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_linux.x86_64 ${GODOT_BIN}
+          chmod +x ${GODOT_BIN}
+          ./${GODOT_BIN} --version
+
+      - name: Install Godot export templates
+        run: |
+          set -euxo pipefail
+          wget -q "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-${GODOT_RELEASE}/Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_export_templates.tpz" -O templates.tpz
+          mkdir -p "${HOME}/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_RELEASE}"
+          unzip -q templates.tpz -d templates_zip
+          cp -r templates_zip/templates/* "${HOME}/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_RELEASE}/"
+          ls -la "${HOME}/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_RELEASE}" | head
+
+      - name: Validate export preset exists
+        run: |
+          test -f export_presets.cfg
+          grep -q 'name="Web"' export_presets.cfg
+
+      - name: Import project in headless mode
+        run: |
+          set -euxo pipefail
+          ./${GODOT_BIN} --headless --path . --import --quit
+
+      - name: Export Web build
+        run: |
+          set -euxo pipefail
+          mkdir -p build/web
+          ./${GODOT_BIN} --headless --path . --export-release "${EXPORT_PRESET}" "${EXPORT_OUTPUT}"
+          test -f "${EXPORT_OUTPUT}"
+          find build/web -maxdepth 2 -type f | sort
+
+      - name: Upload Web artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: yinqi-web-export
+          path: build/web
+          if-no-files-found: error

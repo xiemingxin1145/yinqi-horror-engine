@@ -1,0 +1,28 @@
+{
+  "events": [
+    {
+      "id": "door_knock",
+      "type": "audio",
+      "target": "door",
+      "min_intensity": 40,
+      "tags": ["sound", "warning"],
+      "cooldown_seconds": 20
+    },
+    {
+      "id": "light_flicker",
+      "type": "light",
+      "target": "main_lamp",
+      "min_intensity": 60,
+      "tags": ["visual", "pressure"],
+      "cooldown_seconds": 35
+    },
+    {
+      "id": "paper_ash",
+      "type": "particle",
+      "target": "room_center",
+      "min_intensity": 45,
+      "tags": ["ritual", "visual"],
+      "cooldown_seconds": 30
+    }
+  ]
+}

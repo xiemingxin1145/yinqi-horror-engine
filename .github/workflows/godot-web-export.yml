@@ -17,6 +17,8 @@ jobs:
       image: barichello/godot-ci:4.2.2
     timeout-minutes: 25
     env:
+      GODOT_VERSION: 4.2.2
+      GODOT_RELEASE: stable
       EXPORT_PRESET: Web
       EXPORT_OUTPUT: build/web/index.html
     steps:
@@ -28,6 +30,37 @@ jobs:
           set -eu
           which godot
           godot --version
+          echo "HOME=${HOME}"
+
+      - name: Prepare export templates for GitHub Actions home
+        run: |
+          set -eu
+          TARGET="${HOME}/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_RELEASE}"
+          mkdir -p "${TARGET}"
+
+          if [ -d "/root/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_RELEASE}" ]; then
+            cp -r "/root/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_RELEASE}/." "${TARGET}/"
+          elif [ -d "/root/.local/share/godot/templates/${GODOT_VERSION}.${GODOT_RELEASE}" ]; then
+            cp -r "/root/.local/share/godot/templates/${GODOT_VERSION}.${GODOT_RELEASE}/." "${TARGET}/"
+          elif [ -d "/root/.local/share/godot/export_templates" ]; then
+            FOUND_DIR=$(find /root/.local/share/godot/export_templates -maxdepth 2 -type f -name 'web_release.zip' -print -quit | xargs -r dirname)
+            if [ -n "${FOUND_DIR:-}" ]; then
+              cp -r "${FOUND_DIR}/." "${TARGET}/"
+            fi
+          fi
+
+          if [ ! -f "${TARGET}/web_release.zip" ]; then
+            echo "Built-in templates not found in container; downloading export templates."
+            TEMPLATE_ZIP="Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_export_templates.tpz"
+            curl -fL --retry 3 --retry-delay 5 "https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/${TEMPLATE_ZIP}" -o templates.tpz
+            mkdir -p templates_zip
+            unzip -q templates.tpz -d templates_zip
+            cp -r templates_zip/templates/. "${TARGET}/"
+          fi
+
+          ls -la "${TARGET}"
+          test -f "${TARGET}/web_release.zip"
+          test -f "${TARGET}/web_debug.zip"
 
       - name: Validate export preset exists
         run: |

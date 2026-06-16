@@ -9,6 +9,7 @@
 → FolkloreRules
 → HorrorDirector
 → RenderingDirector
+→ SceneEffectExecutor
 → Godot 场景节点执行
 ```
 
@@ -30,7 +31,32 @@ visual     → CanvasItem Shader / overlay / shadow
 animation  → AnimationPlayer
 ```
 
-现在还只是“命令层”，不直接要求场景里一定存在节点。下一步再把 Main.tscn 或专门的 MapScene.tscn 接上真实节点。
+### SceneEffectExecutor
+
+路径：`src/rendering/SceneEffectExecutor.gd`
+
+职责：监听 `render_command_created`，把 RenderingDirector 的命令执行到当前场景节点上。
+
+当前 `scenes/Main.tscn` 已加入占位节点：
+
+```text
+AmbientShade         CanvasModulate
+VisualOverlay        ColorRect
+MainLamp             PointLight2D
+PaperAsh             GPUParticles2D
+HorrorAnimation      AnimationPlayer
+HorrorAudio          AudioStreamPlayer
+SceneEffectExecutor  Node + 脚本
+```
+
+现在已经形成初版闭环：
+
+```text
+HorrorDirector 事件包
+→ RenderingDirector 命令
+→ SceneEffectExecutor 执行
+→ GameState render.executed_commands 记录
+```
 
 ## Godot 官方能力映射
 
@@ -98,7 +124,7 @@ incense_smoke 香烟雾气
 
 ## 下一步
 
-1. 新建 `scenes/MapDebug.tscn` 或升级 `Main.tscn`。
-2. 加入 `CanvasModulate`、`PointLight2D`、`GPUParticles2D`、`AnimationPlayer` 占位节点。
-3. 写 `SceneEffectExecutor.gd`，读取 RenderingDirector 的命令并执行真实节点效果。
-4. 让 `paper_ash` 真正飘纸灰，让 `light_flicker` 真正闪灯。
+1. 给 `PaperAsh` 补 `ParticleProcessMaterial`，让纸灰方向、速度、重力更像真实纸灰。
+2. 给 `MainLamp` 补真实 light texture，让灯光可见。
+3. 给 `HorrorAudio` 接占位音效资源。
+4. 后续拆 `MapDebug.tscn`，不要一直把调试都堆在 Main。

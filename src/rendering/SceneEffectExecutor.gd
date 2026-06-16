@@ -11,8 +11,10 @@ extends Node
 var executed_commands: Array = []
 var audio_phase := 0.0
 var map_layer_nodes: Array[Node] = []
+var background_texture_rect: TextureRect
 
 func _ready() -> void:
+    _ensure_background_texture_rect()
     _ensure_placeholder_audio()
     if not EventBus.game_event.is_connected(_on_game_event):
         EventBus.game_event.connect(_on_game_event)
@@ -22,6 +24,10 @@ func _on_game_event(event_name: String, payload: Dictionary) -> void:
         execute_command(payload)
     elif event_name == "map_skin_applied":
         apply_map_skin(payload)
+    elif event_name == "viewpoint_entered":
+        apply_viewpoint_background(payload)
+    elif event_name == "breath_state_changed":
+        _apply_breath_state(payload)
 
 func execute_command(command: Dictionary) -> void:
     executed_commands.append(command)
@@ -42,6 +48,44 @@ func execute_command(command: Dictionary) -> void:
             _execute_generic(command)
 
     EventBus.emit_game_event("scene_effect_executed", command)
+
+func apply_viewpoint_background(viewpoint: Dictionary) -> void:
+    _ensure_background_texture_rect()
+    var asset_path := str(viewpoint.get("background_asset", ""))
+    if asset_path == "":
+        return
+    if not ResourceLoader.exists(asset_path):
+        GameState.set_value("render.last_missing_background_asset", asset_path)
+        EventBus.emit_game_event("viewpoint_background_missing", {"path": asset_path, "viewpoint": viewpoint.get("id", "")})
+        return
+    var texture := load(asset_path)
+    if texture is Texture2D and background_texture_rect != null:
+        background_texture_rect.texture = texture
+        background_texture_rect.visible = true
+        if background != null:
+            background.color = Color(0, 0, 0, 1)
+        GameState.set_value("render.last_background_asset", asset_path)
+        EventBus.emit_game_event("viewpoint_background_applied", {"path": asset_path, "viewpoint": viewpoint.get("id", "")})
+
+func _ensure_background_texture_rect() -> void:
+    if background_texture_rect != null and is_instance_valid(background_texture_rect):
+        return
+    var existing := get_parent().get_node_or_null("BackgroundImage")
+    if existing is TextureRect:
+        background_texture_rect = existing
+        return
+    background_texture_rect = TextureRect.new()
+    background_texture_rect.name = "BackgroundImage"
+    background_texture_rect.offset_left = 0
+    background_texture_rect.offset_top = 0
+    background_texture_rect.offset_right = 1280
+    background_texture_rect.offset_bottom = 720
+    background_texture_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+    background_texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+    background_texture_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    background_texture_rect.visible = false
+    get_parent().add_child(background_texture_rect)
+    get_parent().move_child(background_texture_rect, 1)
 
 func apply_map_skin(command: Dictionary) -> void:
     _clear_map_layers()
@@ -107,6 +151,32 @@ func _ensure_placeholder_audio() -> void:
     generator.mix_rate = 22050.0
     generator.buffer_length = 0.35
     audio_player.stream = generator
+
+func _apply_breath_state(state: Dictionary) -> void:
+    if audio_player == null:
+        return
+    _ensure_placeholder_audio()
+    var volume_scale := float(state.get("volume_scale", 0.15))
+    if volume_scale <= 0.16:
+        return
+    audio_player.volume_db = linear_to_db(clampf(volume_scale, 0.05, 1.0))
+    if not audio_player.playing:
+        audio_player.play()
+    _fill_breath_audio(volume_scale, float(state.get("breath_rate", 1.0)))
+
+func _fill_breath_audio(volume_scale: float, breath_rate: float) -> void:
+    var playback := audio_player.get_stream_playback()
+    if playback == null or not playback.has_method("push_frame"):
+        return
+    var frames := 2048
+    var mix_rate := 22050.0
+    for i in range(frames):
+        var t := audio_phase / mix_rate
+        var breath := sin(TAU * max(0.4, breath_rate) * t) * 0.16
+        var low := sin(TAU * 58.0 * t) * 0.08
+        var sample := (breath + low) * clampf(volume_scale, 0.05, 0.9)
+        playback.push_frame(Vector2(sample, sample))
+        audio_phase += 1.0
 
 func _execute_light(command: Dictionary) -> void:
     if main_lamp != null:

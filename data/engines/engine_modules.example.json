@@ -1,0 +1,100 @@
+{
+  "engines": [
+    {
+      "id": "world_sim_engine",
+      "name": "世界模拟引擎",
+      "status": "foundation_ready",
+      "owner_script": "res://src/world_sim/WorldSim.gd",
+      "responsibilities": ["time", "weather", "locations", "npcs", "world_flags"],
+      "next": ["world_tick_rules", "open_map_travel", "npc_daily_schedule"]
+    },
+    {
+      "id": "folklore_rule_engine",
+      "name": "民俗规则引擎",
+      "status": "foundation_ready",
+      "owner_script": "res://src/folklore_rules/FolkloreRules.gd",
+      "responsibilities": ["taboo_check", "risk_delta", "flags", "ritual_conditions"],
+      "next": ["rule_chains", "calendar_terms", "five_elements"]
+    },
+    {
+      "id": "horror_director_engine",
+      "name": "恐怖导演引擎",
+      "status": "foundation_ready",
+      "owner_script": "res://src/horror_director/HorrorDirector.gd",
+      "responsibilities": ["pressure", "phase", "horror_events"],
+      "next": ["cooldown", "event_weights", "player_safety_window"]
+    },
+    {
+      "id": "rendering_engine",
+      "name": "动态渲染引擎",
+      "status": "command_layer_ready",
+      "owner_script": "res://src/rendering/RenderingDirector.gd",
+      "responsibilities": ["light_commands", "particle_commands", "audio_commands", "animation_commands"],
+      "next": ["SceneEffectExecutor", "PointLight2D", "GPUParticles2D", "AudioStreamPlayer"]
+    },
+    {
+      "id": "open_map_engine",
+      "name": "开放地图引擎",
+      "status": "foundation_ready",
+      "owner_script": "res://src/locations/LocationController.gd",
+      "responsibilities": ["current_location", "connected_locations", "location_interactables"],
+      "next": ["travel_cost", "locked_paths", "danger_zones"]
+    },
+    {
+      "id": "interaction_engine",
+      "name": "交互探索引擎",
+      "status": "foundation_ready",
+      "owner_script": "res://src/interactions/InteractionController.gd",
+      "responsibilities": ["inspect_item", "item_action", "clue_gain", "rule_trigger"],
+      "next": ["click_ui", "inventory_actions", "item_combinations"]
+    },
+    {
+      "id": "clue_engine",
+      "name": "线索引擎",
+      "status": "foundation_ready",
+      "owner_script": "res://src/clues/ClueStore.gd",
+      "responsibilities": ["clue_store", "clue_query", "clue_combine"],
+      "next": ["case_graph", "evidence_board", "clue_weight"]
+    },
+    {
+      "id": "storyline_engine",
+      "name": "开放剧情线引擎",
+      "status": "foundation_ready",
+      "owner_script": "res://src/storylines/StorylineEngine.gd",
+      "responsibilities": ["open_threads", "required_clues", "thread_flags"],
+      "next": ["branch_priority", "thread_conflict", "ending_state"]
+    },
+    {
+      "id": "npc_memory_engine",
+      "name": "NPC记忆引擎",
+      "status": "prototype",
+      "owner_script": "res://src/npc_memory/NPCMemory.gd",
+      "responsibilities": ["remember", "recall", "memory_tags"],
+      "next": ["persistence", "memory_decay", "dialogue_context"]
+    },
+    {
+      "id": "npc_behavior_engine",
+      "name": "NPC行为引擎",
+      "status": "foundation_ready",
+      "owner_script": "res://src/npc_behavior/NPCBehaviorPlanner.gd",
+      "responsibilities": ["npc_plan", "fear_behavior", "trust_behavior"],
+      "next": ["behavior_tree", "daily_schedule", "social_reaction"]
+    },
+    {
+      "id": "ghost_generator_engine",
+      "name": "鬼怪生成引擎",
+      "status": "prototype",
+      "owner_script": "res://src/ghost_generator/GhostGenerator.gd",
+      "responsibilities": ["ghost_origin", "obsession", "weakness", "appear_conditions"],
+      "next": ["death_causes", "ritual_bindings", "dynamic_weakness"]
+    },
+    {
+      "id": "narrative_engine",
+      "name": "叙事桥接引擎",
+      "status": "bridge_ready",
+      "owner_script": "res://src/narrative/NarrativeEngine.gd",
+      "responsibilities": ["dialogue_context", "plugin_bridge", "mutation"],
+      "next": ["DialogueManager", "Dialogic", "case_text_generation"]
+    }
+  ]
+}

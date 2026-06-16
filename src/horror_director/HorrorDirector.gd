@@ -16,12 +16,20 @@ func evaluate_pressure(player_state: Dictionary) -> Dictionary:
     var intensity = clampi(fear + progress + danger + clue_pressure, 0, 100)
     last_intensity = intensity
     current_phase = _phase_for_intensity(intensity)
-    return {
+    var state := {
         "phase": current_phase,
         "mood": _mood_for_phase(current_phase),
         "intensity": intensity,
         "events": _events_for_phase(current_phase, intensity)
     }
+    GameState.set_value("player.last_director_state", state)
+    EventBus.emit_game_event("horror_director_evaluated", state)
+    for event_packet in state.get("events", []):
+        EventBus.emit_horror_event(event_packet)
+    return state
+
+func evaluate_from_game_state() -> Dictionary:
+    return evaluate_pressure(GameState.get_value("player", {}))
 
 func _phase_for_intensity(intensity: int) -> String:
     if intensity >= 85:
@@ -44,6 +52,10 @@ func _mood_for_phase(phase: String) -> String:
             return "quiet"
 
 func _events_for_phase(phase: String, intensity: int) -> Array:
+    var registry_events := _events_from_registry(intensity)
+    if not registry_events.is_empty():
+        return registry_events
+
     match phase:
         PHASE_PEAK:
             return [
@@ -67,6 +79,20 @@ func _events_for_phase(phase: String, intensity: int) -> Array:
                 _event("wind", "audio", "window", 0.25, intensity),
                 _event("rain_loop", "audio", "ambient", 0.25, intensity)
             ]
+
+func _events_from_registry(intensity: int) -> Array:
+    var result := []
+    for event_id in DataRegistry.event_templates.keys():
+        var template := DataRegistry.get_event_template(event_id)
+        if intensity >= int(template.get("min_intensity", 0)):
+            result.append(_event(
+                event_id,
+                str(template.get("type", "generic")),
+                str(template.get("target", "world")),
+                0.5,
+                intensity
+            ))
+    return result
 
 func _event(id: String, event_type: String, target: String, weight: float, intensity: int) -> Dictionary:
     return {

@@ -1,7 +1,45 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://src/MainLoop.gd" id="1_main"]
 [ext_resource type="Script" path="res://src/rendering/SceneEffectExecutor.gd" id="2_executor"]
+
+[sub_resource type="Gradient" id="Gradient_lamp"]
+offsets = PackedFloat32Array(0, 0.55, 1)
+colors = PackedColorArray(Color(1, 0.78, 0.42, 1), Color(0.95, 0.34, 0.12, 0.35), Color(0, 0, 0, 0))
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_lamp"]
+gradient = SubResource("Gradient_lamp")
+width = 256
+height = 256
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ash"]
+emission_shape = 1
+emission_sphere_radius = 320.0
+direction = Vector3(0, 1, 0)
+spread = 160.0
+gravity = Vector3(-12, 38, 0)
+initial_velocity_min = 18.0
+initial_velocity_max = 64.0
+angular_velocity_min = -90.0
+angular_velocity_max = 90.0
+scale_min = 0.08
+scale_max = 0.24
+color = Color(0.72, 0.66, 0.55, 0.72)
+
+[sub_resource type="Gradient" id="Gradient_overlay"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(Color(0, 0, 0, 0.5), Color(0, 0, 0, 0))
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_overlay"]
+gradient = SubResource("Gradient_overlay")
+width = 128
+height = 128
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_main")
@@ -23,14 +61,20 @@ mouse_filter = 2
 [node name="MainLamp" type="PointLight2D" parent="."]
 position = Vector2(1040, 130)
 energy = 0.7
+texture = SubResource("GradientTexture2D_lamp")
 texture_scale = 3.0
+shadow_enabled = true
 
 [node name="PaperAsh" type="GPUParticles2D" parent="."]
-position = Vector2(640, 320)
+position = Vector2(640, 260)
 emitting = false
 amount = 80
+process_material = SubResource("ParticleProcessMaterial_ash")
 lifetime = 2.0
 one_shot = true
+preprocess = 0.15
+explosiveness = 0.12
+randomness = 0.65
 
 [node name="HorrorAnimation" type="AnimationPlayer" parent="."]
 

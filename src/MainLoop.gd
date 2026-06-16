@@ -4,6 +4,7 @@ extends Node2D
 @onready var scene_effect_executor: Node = $SceneEffectExecutor
 
 var event_log: Array[String] = []
+var demo_actions: Array[String] = []
 
 func _ready() -> void:
     EventBus.game_event.connect(_on_game_event)
@@ -15,71 +16,91 @@ func _ready() -> void:
     RenderingDirector.clear_commands()
     DataRegistry.load_all_data(true)
 
-    var world := WorldSim.create_world("engine_matrix_world")
-    var case_data := FolkloreRules.generate_case_seed(world)
+    GameState.set_value("player.fear", 10)
+    GameState.set_value("player.progress", 0)
+    GameState.set_value("player.danger", 15)
+    GameState.set_value("player.clue_pressure", 0)
 
-    GameState.set_value("player.fear", 18)
-    GameState.set_value("player.progress", 25)
-    GameState.set_value("player.danger", case_data.get("risk", 0))
-    GameState.set_value("player.clue_pressure", 12)
+    var start_result := ViewpointDirector.start("village_gate")
+    demo_actions.append("进入试玩版：村口")
 
-    var location_result := LocationController.enter_location("ancestral_hall")
-    var map_skin_result := MapSkinDirector.apply_location_skin("ancestral_hall")
-    var inspect_result := InteractionController.inspect_item("paper_figure")
-    var taboo_result := InteractionController.perform_item_action("paper_figure", "paint_eye")
-    var storyline_result := StorylineEngine.evaluate_open_threads()
-    var npc_plans := NPCBehaviorPlanner.plan_for_all_npcs(world, case_data)
+    var inspect_boundary := HotspotController.inspect_hotspot("broken_boundary_stone")
+    demo_actions.append("调查界碑")
+
+    var turn_right_result := ViewpointDirector.turn_right()
+    demo_actions.append("右转：土路与麦克风")
+
+    var inspect_microphone := HotspotController.inspect_hotspot("qingqing_microphone")
+    demo_actions.append("调查麦克风，获得落水声录音")
+
+    var go_bridge_result := ViewpointDirector.go_exit()
+    demo_actions.append("前往河桥")
+
+    var inspect_white_cloth := HotspotController.inspect_hotspot("oil_soaked_white_cloth")
+    demo_actions.append("调查香油白布")
+
+    var turn_bridge_result := ViewpointDirector.turn_right()
+    demo_actions.append("右转：桥面脚印")
+
+    var inspect_student_id := HotspotController.inspect_hotspot("student_id_necklace")
+    demo_actions.append("调查学生证项链，确认林晚秋身份")
+
+    GameState.set_value("player.progress", 20)
+    GameState.set_value("player.clue_pressure", ClueStore.list_item_ids().size() * 5)
     var director_state := HorrorDirector.evaluate_from_game_state()
-    var engine_summary := EngineHub.summary()
+    var storyline_result := StorylineEngine.evaluate_open_threads()
+    var current_viewpoint := ViewpointDirector.get_current_viewpoint()
+    var visible_hotspots := ViewpointDirector.get_current_hotspots()
     var render_commands := RenderingDirector.get_commands()
     var executed_commands := []
     if scene_effect_executor != null and scene_effect_executor.has_method("get_executed_commands"):
         executed_commands = scene_effect_executor.get_executed_commands()
 
     status_label.text = _build_text(
-        world,
-        case_data,
-        location_result,
-        map_skin_result,
-        inspect_result,
-        taboo_result,
+        start_result,
+        inspect_boundary,
+        turn_right_result,
+        inspect_microphone,
+        go_bridge_result,
+        inspect_white_cloth,
+        turn_bridge_result,
+        inspect_student_id,
+        current_viewpoint,
+        visible_hotspots,
         storyline_result,
         director_state,
-        npc_plans,
-        engine_summary,
         render_commands,
         executed_commands
     )
 
-func _build_text(world: Dictionary, case_data: Dictionary, location_result: Dictionary, map_skin_result: Dictionary, inspect_result: Dictionary, taboo_result: Dictionary, storyline_result: Dictionary, director_state: Dictionary, npc_plans: Array, engine_summary: Dictionary, render_commands: Array, executed_commands: Array) -> String:
+func _build_text(start_result: Dictionary, inspect_boundary: Dictionary, turn_right_result: Dictionary, inspect_microphone: Dictionary, go_bridge_result: Dictionary, inspect_white_cloth: Dictionary, turn_bridge_result: Dictionary, inspect_student_id: Dictionary, current_viewpoint: Dictionary, visible_hotspots: Array, storyline_result: Dictionary, director_state: Dictionary, render_commands: Array, executed_commands: Array) -> String:
     var summary := DataRegistry.summary()
-    var plans := []
-    for plan in npc_plans:
-        plans.append("%s:%s" % [plan.get("npc_name", "npc"), plan.get("action", "idle")])
+    var hotspot_names := []
+    for item in visible_hotspots:
+        hotspot_names.append(item.get("name", item.get("id", "unknown")))
 
-    var interactable_names := []
-    for item in location_result.get("interactables", []):
-        interactable_names.append(item.get("name", item.get("id", "unknown")))
-
-    return "《阴契》Engine Matrix Loop V0.3\n\nEngineHub %s\nData %s\nWorld %s\nCase %s\n\nLocation %s\nMapSkin %s\nInteractables %s\nInspect %s\nTaboo %s\nStorylines %s\n\nDirector %s intensity=%s events=%s\nRenderCommands %s\nExecutedEffects %s\nNPC %s\nFlags %s\nClues %s\n\nEvents\n%s" % [
-        engine_summary,
+    return "《阴契》试玩版 V0.1：村口 → 河桥\n\nData %s\nCurrentViewpoint: %s / %s\nVisibleHotspots: %s\n\nDemoActions:\n%s\n\nStart %s\nBoundary %s\nTurnGate %s\nMicrophone %s\nGoBridge %s\nWhiteCloth %s\nTurnBridge %s\nStudentId %s\n\nClues %s\nStorylines %s\nDirector %s intensity=%s events=%s\nRenderCommands %s\nExecutedEffects %s\nFlags %s\n\nEvents\n%s\n\n试玩版结束：前往老宅的路被雾封住，后续版本开放。" % [
         summary,
-        world.get("name", "world"),
-        case_data.get("title", "case"),
-        location_result.get("location", {}).get("name", "unknown"),
-        map_skin_result.get("skin", {}).get("name", "no_skin"),
-        ", ".join(interactable_names),
-        inspect_result,
-        taboo_result,
+        current_viewpoint.get("location", "unknown"),
+        current_viewpoint.get("name", "unknown"),
+        ", ".join(hotspot_names),
+        "\n".join(demo_actions),
+        start_result.get("ok", false),
+        inspect_boundary.get("clue", {}),
+        turn_right_result.get("viewpoint", {}).get("name", "unknown"),
+        inspect_microphone.get("clue", {}),
+        go_bridge_result.get("viewpoint", {}).get("name", "unknown"),
+        inspect_white_cloth.get("clue", {}),
+        turn_bridge_result.get("viewpoint", {}).get("name", "unknown"),
+        inspect_student_id.get("clue", {}),
+        ClueStore.list_item_ids(),
         storyline_result,
         director_state.get("phase", "phase"),
         director_state.get("intensity", 0),
         director_state.get("events", []).size(),
         render_commands.size(),
         executed_commands.size(),
-        ", ".join(plans),
         GameState.get_value("flags", {}),
-        ClueStore.list_item_ids(),
         "\n".join(event_log)
     ]
 

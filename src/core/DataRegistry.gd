@@ -4,6 +4,8 @@ var locations: Dictionary = {}
 var npc_templates: Dictionary = {}
 var rule_templates: Dictionary = {}
 var event_templates: Dictionary = {}
+var interactable_templates: Dictionary = {}
+var storyline_templates: Dictionary = {}
 var loaded_sources: Array[String] = []
 
 const LOCATION_FILES := [
@@ -18,12 +20,20 @@ const RULE_FILES := [
 const EVENT_FILES := [
     "res://data/events/event_templates.example.json"
 ]
+const INTERACTABLE_FILES := [
+    "res://data/interactables/interactables.example.json"
+]
+const STORYLINE_FILES := [
+    "res://data/storylines/open_storylines.example.json"
+]
 
 func clear() -> void:
     locations.clear()
     npc_templates.clear()
     rule_templates.clear()
     event_templates.clear()
+    interactable_templates.clear()
+    storyline_templates.clear()
     loaded_sources.clear()
 
 func load_all_data(force_reload: bool = false) -> void:
@@ -39,6 +49,10 @@ func load_all_data(force_reload: bool = false) -> void:
         load_rules_from_file(path)
     for path in EVENT_FILES:
         load_events_from_file(path)
+    for path in INTERACTABLE_FILES:
+        load_interactables_from_file(path)
+    for path in STORYLINE_FILES:
+        load_storylines_from_file(path)
 
     if not _has_any_data():
         seed_minimal_demo_data()
@@ -47,7 +61,7 @@ func load_all_data(force_reload: bool = false) -> void:
     EventBus.emit_game_event("data_registry_loaded", summary())
 
 func _has_any_data() -> bool:
-    return not locations.is_empty() or not npc_templates.is_empty() or not rule_templates.is_empty() or not event_templates.is_empty()
+    return not locations.is_empty() or not npc_templates.is_empty() or not rule_templates.is_empty() or not event_templates.is_empty() or not interactable_templates.is_empty() or not storyline_templates.is_empty()
 
 func load_locations_from_file(path: String) -> void:
     var data := _read_json_dictionary(path)
@@ -93,6 +107,28 @@ func load_events_from_file(path: String) -> void:
     if not data.is_empty():
         loaded_sources.append(path)
 
+func load_interactables_from_file(path: String) -> void:
+    var data := _read_json_dictionary(path)
+    for item in data.get("interactables", []):
+        if typeof(item) == TYPE_DICTIONARY and item.has("id"):
+            var item_copy: Dictionary = item.duplicate(true)
+            var id := str(item_copy.get("id"))
+            item_copy.erase("id")
+            register_interactable(id, item_copy)
+    if not data.is_empty():
+        loaded_sources.append(path)
+
+func load_storylines_from_file(path: String) -> void:
+    var data := _read_json_dictionary(path)
+    for item in data.get("storylines", []):
+        if typeof(item) == TYPE_DICTIONARY and item.has("id"):
+            var item_copy: Dictionary = item.duplicate(true)
+            var id := str(item_copy.get("id"))
+            item_copy.erase("id")
+            register_storyline(id, item_copy)
+    if not data.is_empty():
+        loaded_sources.append(path)
+
 func _read_json_dictionary(path: String) -> Dictionary:
     if not FileAccess.file_exists(path):
         push_warning("DataRegistry missing file: %s" % path)
@@ -117,6 +153,12 @@ func register_rule(rule_id: String, data: Dictionary) -> void:
 func register_event_template(event_id: String, data: Dictionary) -> void:
     event_templates[event_id] = data
 
+func register_interactable(interactable_id: String, data: Dictionary) -> void:
+    interactable_templates[interactable_id] = data
+
+func register_storyline(storyline_id: String, data: Dictionary) -> void:
+    storyline_templates[storyline_id] = data
+
 func get_location(location_id: String) -> Dictionary:
     return locations.get(location_id, {})
 
@@ -129,12 +171,29 @@ func get_rule(rule_id: String) -> Dictionary:
 func get_event_template(event_id: String) -> Dictionary:
     return event_templates.get(event_id, {})
 
+func get_interactable(interactable_id: String) -> Dictionary:
+    return interactable_templates.get(interactable_id, {})
+
+func get_storyline(storyline_id: String) -> Dictionary:
+    return storyline_templates.get(storyline_id, {})
+
+func get_interactables_for_location(location_id: String) -> Array:
+    var result := []
+    for item_id in interactable_templates.keys():
+        var item := get_interactable(item_id).duplicate(true)
+        if str(item.get("location", "")) == location_id:
+            item["id"] = item_id
+            result.append(item)
+    return result
+
 func summary() -> Dictionary:
     return {
         "locations": locations.size(),
         "npcs": npc_templates.size(),
         "rules": rule_templates.size(),
         "events": event_templates.size(),
+        "interactables": interactable_templates.size(),
+        "storylines": storyline_templates.size(),
         "sources": loaded_sources.duplicate()
     }
 
@@ -165,4 +224,10 @@ func seed_minimal_demo_data() -> void:
         "type": "audio",
         "target": "door",
         "min_intensity": 40
+    })
+    register_interactable("paper_figure", {
+        "name": "未点睛纸人",
+        "location": "ancestral_hall",
+        "tags": ["paper_figure", "ritual"],
+        "clue": {"id": "paper_sleeve_mark", "name": "纸人袖口泥痕", "tags": ["paper_figure"], "text": "纸人袖口有泥。"}
     })

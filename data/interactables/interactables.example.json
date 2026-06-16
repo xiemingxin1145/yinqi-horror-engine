@@ -1,0 +1,49 @@
+{
+  "interactables": [
+    {
+      "id": "paper_figure",
+      "name": "未点睛纸人",
+      "location": "ancestral_hall",
+      "tags": ["paper_figure", "ritual", "taboo"],
+      "default_action": "inspect",
+      "clue": {
+        "id": "paper_sleeve_mark",
+        "name": "纸人袖口泥痕",
+        "tags": ["paper_figure", "mud", "ritual"],
+        "text": "纸人袖口有一层干泥，像是刚从河边被搬回来。"
+      },
+      "rule_action": {
+        "trigger": "item_action",
+        "time": "子时",
+        "item_tag": "paper_figure",
+        "action": "paint_eye"
+      }
+    },
+    {
+      "id": "genealogy_book",
+      "name": "缺页族谱",
+      "location": "ancestral_hall",
+      "tags": ["family", "record"],
+      "default_action": "inspect",
+      "clue": {
+        "id": "missing_genealogy_page",
+        "name": "族谱缺页",
+        "tags": ["family", "record"],
+        "text": "族谱中有一页被撕走，断口很新。"
+      }
+    },
+    {
+      "id": "red_thread",
+      "name": "断红线",
+      "location": "old_house",
+      "tags": ["marriage", "ritual"],
+      "default_action": "inspect",
+      "clue": {
+        "id": "broken_red_thread",
+        "name": "断红线",
+        "tags": ["marriage", "ritual"],
+        "text": "红线断口整齐，不像自然磨断。"
+      }
+    }
+  ]
+}

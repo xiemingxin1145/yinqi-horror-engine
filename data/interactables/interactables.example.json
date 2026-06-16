@@ -1,16 +1,204 @@
 {
   "interactables": [
     {
-      "id": "paper_figure",
-      "name": "未点睛纸人",
-      "location": "ancestral_hall",
-      "tags": ["paper_figure", "ritual", "taboo"],
+      "id": "broken_boundary_stone",
+      "name": "断裂的归魂村界碑",
+      "location": "village_gate",
+      "tags": ["boundary", "escape_failed", "blood_mark"],
       "default_action": "inspect",
       "clue": {
-        "id": "paper_sleeve_mark",
-        "name": "纸人袖口泥痕",
-        "tags": ["paper_figure", "mud", "ritual"],
-        "text": "纸人袖口有一层干泥，像是刚从河边被搬回来。"
+        "id": "fresh_boundary_crack",
+        "name": "新鲜断口与抓痕",
+        "tags": ["village_gate", "escape", "boundary"],
+        "text": "界碑断口极新，石缝里有暗红色抓痕，旁边还有摔烂的摩托车与血迹。"
+      }
+    },
+    {
+      "id": "village_notice_board",
+      "name": "归魂村村民公约",
+      "location": "village_gate",
+      "tags": ["notice", "village_rules", "forbidden_lodging"],
+      "default_action": "inspect",
+      "clue": {
+        "id": "red_painted_rule_three",
+        "name": "被红漆涂掉的第三条",
+        "tags": ["village_rule", "outsider"],
+        "text": "公约第三条被红漆涂掉，隐约可见：外来人不得留宿。"
+      }
+    },
+    {
+      "id": "qingqing_microphone",
+      "name": "苏青青的备用麦克风",
+      "location": "village_gate",
+      "tags": ["recording", "qingqing", "river_hint"],
+      "default_action": "inspect",
+      "clue": {
+        "id": "microphone_drowning_audio",
+        "name": "落水声录音",
+        "tags": ["river_bridge", "drowning", "qingqing"],
+        "text": "麦克风里残留着惊恐喘息、重物落水声，以及一句被雾气吞掉的求救。"
+      }
+    },
+    {
+      "id": "oil_soaked_white_cloth",
+      "name": "浸水白布条",
+      "location": "river_bridge",
+      "tags": ["white_cloth", "sesame_oil", "drowning"],
+      "default_action": "inspect",
+      "clue": {
+        "id": "oil_soaked_gag_cloth",
+        "name": "香油白布",
+        "tags": ["lin_wanqiu", "drowning", "ghost_marriage"],
+        "text": "白布散发着浓重香油味和腐臭味，像是曾被死死缠在人的口鼻上。"
+      }
+    },
+    {
+      "id": "muddy_grass_shoes",
+      "name": "凌乱草鞋与脚印",
+      "location": "river_bridge",
+      "tags": ["footprints", "river", "struggle"],
+      "default_action": "inspect",
+      "clue": {
+        "id": "footprints_to_river",
+        "name": "指向河心的脚印",
+        "tags": ["drowning_scene", "struggle"],
+        "text": "桥面草鞋凌乱，泥脚印全部指向漆黑的河心。"
+      }
+    },
+    {
+      "id": "student_id_necklace",
+      "name": "学生证项链",
+      "location": "river_bridge",
+      "tags": ["lin_wanqiu", "identity", "evidence"],
+      "default_action": "inspect",
+      "clue": {
+        "id": "lin_wanqiu_student_id",
+        "name": "林晚秋的学生证项链",
+        "tags": ["identity", "lin_wanqiu", "victim"],
+        "text": "项链上写着林晚秋，21岁，美术系学生。照片里的人还活着，眼神干净。"
+      }
+    },
+    {
+      "id": "blood_red_wedding_dress",
+      "name": "新娘红嫁衣",
+      "location": "old_house",
+      "tags": ["wedding_dress", "blood", "dead_clothes"],
+      "default_action": "inspect",
+      "clue": {
+        "id": "blood_written_injustice",
+        "name": "衣袖里的冤字",
+        "tags": ["ghost_marriage", "lin_wanqiu", "dead_clothes"],
+        "text": "嫁衣衣袖内侧有大片血迹，布料里被指甲抓出了一个冤字。"
+      },
+      "rule_action": {
+        "trigger": "item_action",
+        "location": "old_house",
+        "item_tag": "dead_clothes",
+        "action": "move_dead_clothes"
+      }
+    },
+    {
+      "id": "basement_chains",
+      "name": "地下室铁链",
+      "location": "old_house",
+      "tags": ["basement", "chains", "kidnapping"],
+      "default_action": "inspect",
+      "clue": {
+        "id": "basement_prison_chains",
+        "name": "囚禁铁链",
+        "tags": ["kidnapping", "lin_wanqiu", "old_house"],
+        "text": "地下室墙上固定着铁镣铐，地上散着发霉剩饭和被撕碎的画纸。"
+      }
+    },
+    {
+      "id": "ghost_marriage_contract",
+      "name": "阴婚聘书",
+      "location": "old_house",
+      "tags": ["ghost_marriage", "contract", "clan_crime"],
+      "default_action": "inspect",
+      "clue": {
+        "id": "ghost_marriage_contract_clue",
+        "name": "阴婚聘书",
+        "tags": ["feng_jiande", "lin_wanqiu", "ghost_marriage"],
+        "text": "聘书上写着以骨为媒，宣纸为肉，林晚秋被强行配给封家亡子。"
+      }
+    },
+    {
+      "id": "village_chief_ledger",
+      "name": "村长账本",
+      "location": "old_house",
+      "tags": ["ledger", "human_trafficking", "feng_jiande"],
+      "default_action": "inspect",
+      "clue": {
+        "id": "feng_jiande_ledger",
+        "name": "封建德的账本",
+        "tags": ["feng_jiande", "crime", "money"],
+        "text": "账本记录了买人、封口、阴婚开销，封建德是整件事的主谋。"
+      }
+    },
+    {
+      "id": "paper_craftsman_toolbox",
+      "name": "扎纸匠工具箱",
+      "location": "opera_stage",
+      "tags": ["toolbox", "paper_craft", "jiushu"],
+      "default_action": "inspect",
+      "clue": {
+        "id": "paper_tools_with_bone_dust",
+        "name": "沾骨粉的扎纸工具",
+        "tags": ["paper_bride", "jiushu", "craft"],
+        "text": "工具缝里嵌着白色骨粉，刀口边缘还有发黑的纸屑。"
+      }
+    },
+    {
+      "id": "paper_craft_testament",
+      "name": "《扎纸遗书》",
+      "location": "opera_stage",
+      "tags": ["paper_craft_testament", "rule_reveal", "genealogy_lock"],
+      "default_action": "inspect",
+      "clue": {
+        "id": "testament_genealogy_fire_rule",
+        "name": "族谱解契规则",
+        "tags": ["rule", "genealogy", "white_candle", "paper_bride"],
+        "text": "纸人有骨，其魂在目。子时至，万不可点睛。欲解其缚，唯有断其名分。族谱燃，则名分消散，阴阳锁自解；寻常凡火不可伤族谱，必以引路业火白蜡烛引燃。"
+      }
+    },
+    {
+      "id": "shadow_play_screen",
+      "name": "皮影戏幕布",
+      "location": "opera_stage",
+      "tags": ["shadow_play", "reenactment", "drowning"],
+      "default_action": "inspect",
+      "clue": {
+        "id": "shadow_play_drowning_scene",
+        "name": "按入水中的皮影",
+        "tags": ["drowning", "accomplices", "lin_wanqiu"],
+        "text": "手电照上去，幕布自动投出三个人影将一个娇小人影按入水中的画面。"
+      }
+    },
+    {
+      "id": "ancestral_hall_back_key",
+      "name": "祠堂后门钥匙",
+      "location": "opera_stage",
+      "tags": ["key", "ancestral_hall", "jiushu"],
+      "default_action": "inspect",
+      "clue": {
+        "id": "backdoor_key_from_jiushu",
+        "name": "九叔交出的后门钥匙",
+        "tags": ["key", "final_route", "betrayal"],
+        "text": "九叔把钥匙塞给陈默，让他去祠堂送蜡烛，语气里像藏着另一层算计。"
+      }
+    },
+    {
+      "id": "paper_bride_body",
+      "name": "纸新娘",
+      "location": "ancestral_hall",
+      "tags": ["paper_bride", "ritual", "taboo", "paper_figure"],
+      "default_action": "inspect",
+      "clue": {
+        "id": "paper_bride_empty_bone_frame",
+        "name": "骨架中空的纸新娘",
+        "tags": ["paper_bride", "lin_wanqiu", "bone_frame"],
+        "text": "宣纸下不是竹篾，而是一具被剔净的骨架。眼眶位置钉着两枚陪葬玉蝉。"
       },
       "rule_action": {
         "trigger": "item_action",
@@ -20,29 +208,48 @@
       }
     },
     {
-      "id": "genealogy_book",
-      "name": "缺页族谱",
+      "id": "feng_genealogy_book",
+      "name": "封氏族谱",
       "location": "ancestral_hall",
-      "tags": ["family", "record"],
+      "tags": ["genealogy", "clan_contract", "final_solution"],
       "default_action": "inspect",
       "clue": {
-        "id": "missing_genealogy_page",
-        "name": "族谱缺页",
-        "tags": ["family", "record"],
-        "text": "族谱中有一页被撕走，断口很新。"
+        "id": "lin_wanqiu_blood_name_in_genealogy",
+        "name": "族谱上的林晚秋",
+        "tags": ["genealogy", "lin_wanqiu", "contract_lock"],
+        "text": "封家亡子名字旁边，林晚秋三个字被鲜血强行勾入偏房名分，正和《扎纸遗书》的族谱为锁完全吻合。"
+      },
+      "rule_action": {
+        "trigger": "item_action",
+        "location": "ancestral_hall",
+        "item_tag": "genealogy",
+        "action": "burn_with_white_candle"
       }
     },
     {
-      "id": "red_thread",
-      "name": "断红线",
-      "location": "old_house",
-      "tags": ["marriage", "ritual"],
+      "id": "cinnabar_brush",
+      "name": "朱砂笔与活人血",
+      "location": "ancestral_hall",
+      "tags": ["cinnabar", "blood", "paint_eye"],
       "default_action": "inspect",
       "clue": {
-        "id": "broken_red_thread",
-        "name": "断红线",
-        "tags": ["marriage", "ritual"],
-        "text": "红线断口整齐，不像自然磨断。"
+        "id": "blood_cinnabar_eye_tool",
+        "name": "点睛工具",
+        "tags": ["paint_eye", "taboo", "ritual"],
+        "text": "朱砂里混着新鲜活人血，只等子时给纸新娘点睛。"
+      }
+    },
+    {
+      "id": "white_candles",
+      "name": "跑腿送来的白蜡烛",
+      "location": "ancestral_hall",
+      "tags": ["white_candle", "delivery_order", "final_solution"],
+      "default_action": "inspect",
+      "clue": {
+        "id": "delivery_white_candles",
+        "name": "引路业火白蜡烛",
+        "tags": ["white_candle", "solution", "chen_mo"],
+        "text": "这箱跑腿单里的白蜡烛，正是《扎纸遗书》里能引燃族谱的引路业火。"
       }
     }
   ]

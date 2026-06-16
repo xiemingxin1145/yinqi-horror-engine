@@ -8,13 +8,15 @@ var action_log: Array[String] = []
 var last_result: Dictionary = {}
 var button_left: Button
 var button_right: Button
-var button_inspect: Button
 var button_exit: Button
 var button_restart: Button
+var clue_popup: AcceptDialog
+var hotspot_buttons: Array[Button] = []
 
 func _ready() -> void:
     _connect_events()
     _create_demo_buttons()
+    _create_clue_popup()
     _start_demo()
 
 func _connect_events() -> void:
@@ -26,11 +28,10 @@ func _connect_events() -> void:
         EventBus.clue_added.connect(_on_clue_added)
 
 func _create_demo_buttons() -> void:
-    button_left = _make_button("Left", Vector2(48, 560), Vector2(200, 76), _on_left_pressed)
-    button_right = _make_button("Right", Vector2(280, 560), Vector2(200, 76), _on_right_pressed)
-    button_inspect = _make_button("Inspect", Vector2(512, 560), Vector2(248, 76), _on_inspect_pressed)
-    button_exit = _make_button("Go", Vector2(792, 560), Vector2(248, 76), _on_exit_pressed)
-    button_restart = _make_button("Restart", Vector2(1072, 560), Vector2(158, 76), _on_restart_pressed)
+    button_left = _make_button("Left", Vector2(48, 560), Vector2(160, 76), _on_left_pressed)
+    button_right = _make_button("Right", Vector2(224, 560), Vector2(160, 76), _on_right_pressed)
+    button_exit = _make_button("Go", Vector2(920, 560), Vector2(180, 76), _on_exit_pressed)
+    button_restart = _make_button("Restart", Vector2(1120, 560), Vector2(140, 76), _on_restart_pressed)
 
 func _make_button(label: String, pos: Vector2, size: Vector2, callback: Callable) -> Button:
     var button := Button.new()
@@ -40,6 +41,13 @@ func _make_button(label: String, pos: Vector2, size: Vector2, callback: Callable
     button.pressed.connect(callback)
     add_child(button)
     return button
+
+func _create_clue_popup() -> void:
+    clue_popup = AcceptDialog.new()
+    clue_popup.title = "Clue"
+    clue_popup.position = Vector2(260, 120)
+    clue_popup.size = Vector2(760, 360)
+    add_child(clue_popup)
 
 func _start_demo() -> void:
     GameState.reset()
@@ -62,23 +70,44 @@ func _on_right_pressed() -> void:
     action_log.append("Turn right")
     _refresh_screen()
 
-func _on_inspect_pressed() -> void:
-    var result := HotspotController.inspect_first_visible_hotspot()
+func _inspect_hotspot(hotspot_id: String) -> void:
+    var result := HotspotController.inspect_hotspot(hotspot_id)
     last_result = result
-    action_log.append("Inspect: %s" % result.get("hotspot_id", "none"))
+    action_log.append("Inspect: %s" % hotspot_id)
+    _show_clue_popup(result)
     _update_pressure_after_action()
     _refresh_screen()
+
+func _show_clue_popup(result: Dictionary) -> void:
+    if clue_popup == null:
+        return
+    var clue: Dictionary = result.get("clue", {})
+    if clue.is_empty():
+        clue_popup.title = "Nothing Found"
+        clue_popup.dialog_text = "Nothing useful was found here."
+    else:
+        clue_popup.title = str(clue.get("name", "New Clue"))
+        clue_popup.dialog_text = str(clue.get("text", ""))
+    clue_popup.popup_centered()
 
 func _on_exit_pressed() -> void:
     var target := ViewpointDirector.get_exit_target()
     if target == "old_house":
         last_result = {"ok": false, "reason": "demo_end", "message": "The path to the old house is sealed by fog. Demo V0.1 ends here."}
         action_log.append("Demo end: old house locked")
+        _show_demo_end_popup()
         _refresh_screen()
         return
     last_result = ViewpointDirector.go_exit()
     action_log.append("Go to: %s" % target)
     _refresh_screen()
+
+func _show_demo_end_popup() -> void:
+    if clue_popup == null:
+        return
+    clue_popup.title = "Demo End"
+    clue_popup.dialog_text = "The path to the old house is sealed by fog. Demo V0.1 ends here."
+    clue_popup.popup_centered()
 
 func _on_restart_pressed() -> void:
     _start_demo()
@@ -90,6 +119,7 @@ func _update_pressure_after_action() -> void:
     StorylineEngine.evaluate_open_threads()
 
 func _refresh_screen() -> void:
+    _refresh_hotspot_buttons()
     var current_viewpoint := ViewpointDirector.get_current_viewpoint()
     var visible_hotspots := ViewpointDirector.get_current_hotspots()
     var hotspot_names := []
@@ -122,6 +152,28 @@ func _refresh_screen() -> void:
         "\n".join(action_log.slice(max(0, action_log.size() - 8), action_log.size())),
         "\n".join(event_log.slice(max(0, event_log.size() - 10), event_log.size()))
     ]
+
+func _refresh_hotspot_buttons() -> void:
+    for button in hotspot_buttons:
+        if is_instance_valid(button):
+            button.queue_free()
+    hotspot_buttons.clear()
+
+    var hotspots := ViewpointDirector.get_current_hotspots()
+    var base_x := 408.0
+    var base_y := 560.0
+    var button_w := 160.0
+    for i in range(min(hotspots.size(), 3)):
+        var hotspot: Dictionary = hotspots[i]
+        var hotspot_id := str(hotspot.get("id", ""))
+        var label := str(hotspot.get("name", hotspot_id))
+        var button := Button.new()
+        button.text = label.substr(0, min(label.length(), 8))
+        button.position = Vector2(base_x + i * (button_w + 12.0), base_y)
+        button.size = Vector2(button_w, 76)
+        button.pressed.connect(func(): _inspect_hotspot(hotspot_id))
+        add_child(button)
+        hotspot_buttons.append(button)
 
 func _on_game_event(event_name: String, _payload: Dictionary) -> void:
     event_log.append("GAME " + event_name)

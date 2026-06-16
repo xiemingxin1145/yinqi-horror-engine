@@ -4,21 +4,59 @@
       "id": "midnight_paper_eye_taboo",
       "name": "子时不可点睛",
       "trigger": "item_action",
+      "concept": "点睛即赋予人格，子时点睛会解开纸新娘禁锢并反噬点睛者。",
       "conditions": {
         "time": "子时",
         "item_tag": "paper_figure",
         "action": "paint_eye"
       },
       "effects": {
-        "risk_delta": 30,
-        "event": "paper_figure_moves",
-        "flag": "paper_eye_taboo_broken"
+        "risk_delta": 60,
+        "event": "paper_body_transformation",
+        "flag": "paper_eye_taboo_broken",
+        "render_tags": ["lights_out", "black_tears", "paper_ash", "low_frequency_audio"]
+      }
+    },
+    {
+      "id": "genealogy_contract_burn_rule",
+      "name": "族谱燃则名分消散",
+      "trigger": "item_action",
+      "concept": "封氏族谱是宗族气运枷锁，林晚秋之名被写入偏房名分，必须以白蜡烛引路业火焚毁才能解契。",
+      "conditions": {
+        "location": "ancestral_hall",
+        "item_tag": "genealogy",
+        "action": "burn_with_white_candle"
+      },
+      "effects": {
+        "risk_delta": -80,
+        "event": "genealogy_contract_broken",
+        "flag": "lin_wanqiu_released",
+        "resolve_thread": "paper_bride_case_thread",
+        "render_tags": ["genealogy_fire", "paper_ash_storm", "clan_backlash"]
+      }
+    },
+    {
+      "id": "dead_clothes_disturbance_taboo",
+      "name": "动死人衣者死",
+      "trigger": "item_action",
+      "concept": "死者成法则源后，其贴身衣物成为次级禁忌媒介，贪图流量翻动者会被纸质化。",
+      "conditions": {
+        "location": "old_house",
+        "item_tag": "dead_clothes",
+        "action": "move_dead_clothes"
+      },
+      "effects": {
+        "risk_delta": 35,
+        "event": "dead_clothes_paper_hair",
+        "flag": "dead_clothes_taboo_triggered",
+        "render_tags": ["paper_fibers", "visual_flash", "audio_whisper"]
       }
     },
     {
       "id": "ancestral_hall_name_taboo",
       "name": "祠堂不可直呼亡者名",
       "trigger": "dialogue_action",
+      "concept": "祠堂内直呼死者真名会让牌位与族谱短暂连通，召来宗族法则注视。",
       "conditions": {
         "location": "ancestral_hall",
         "dialogue_tag": "dead_name"
@@ -26,7 +64,22 @@
       "effects": {
         "risk_delta": 20,
         "event": "tablet_crack",
-        "flag": "dead_name_called"
+        "flag": "dead_name_called",
+        "render_tags": ["tablet_crack", "dust_burst"]
+      }
+    },
+    {
+      "id": "rule_revival_world_law",
+      "name": "规矩复苏总则",
+      "trigger": "world_state",
+      "concept": "恐怖复苏不是鬼怪归来，而是黄历宜忌、节气、丧葬禁忌等概念获得实体约束力。违禁即被因果律抹杀。",
+      "conditions": {
+        "world_phase": "first_crack"
+      },
+      "effects": {
+        "risk_delta": 0,
+        "event": "world_rules_unstable",
+        "flag": "rule_revival_first_crack"
       }
     }
   ]

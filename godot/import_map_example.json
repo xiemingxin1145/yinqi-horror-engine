@@ -1,0 +1,6 @@
+{
+  "backgrounds_prefix": "res://assets/backgrounds/",
+  "characters_prefix": "res://assets/characters/",
+  "icons_prefix": "res://assets/icons/",
+  "note": "按 manifest/assets_manifest.json 的 path 字段导入。PNG 占位图可被最终同名图片直接覆盖。"
+}

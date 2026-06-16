@@ -22,6 +22,7 @@ ClueStore="*res://src/clues/ClueStore.gd"
 StorylineEngine="*res://src/storylines/StorylineEngine.gd"
 FolkloreRules="*res://src/folklore_rules/FolkloreRules.gd"
 HorrorDirector="*res://src/horror_director/HorrorDirector.gd"
+RenderingDirector="*res://src/rendering/RenderingDirector.gd"
 GhostGenerator="*res://src/ghost_generator/GhostGenerator.gd"
 NarrativeEngine="*res://src/narrative/NarrativeEngine.gd"
 

@@ -1,31 +1,73 @@
 {
   "storylines": [
     {
-      "id": "paper_contract_thread",
-      "name": "纸契线",
-      "type": "open_case_thread",
+      "id": "paper_bride_case_thread",
+      "name": "纸新娘案主线",
+      "type": "vertical_slice_case_thread",
       "status": "inactive",
-      "required_clues": ["paper_sleeve_mark", "missing_genealogy_page"],
-      "optional_clues": ["broken_red_thread"],
-      "related_locations": ["ancestral_hall", "old_house", "river_bridge"],
-      "related_rules": ["midnight_paper_eye_taboo"],
+      "premise": "恐怖复苏第一道裂缝中，旧规矩获得实体约束力。陈默误入归魂村，必须查清林晚秋被做成纸新娘的真相并烧毁封氏族谱。",
+      "required_clues": [
+        "microphone_drowning_audio",
+        "lin_wanqiu_student_id",
+        "ghost_marriage_contract_clue",
+        "testament_genealogy_fire_rule",
+        "lin_wanqiu_blood_name_in_genealogy",
+        "delivery_white_candles"
+      ],
+      "optional_clues": [
+        "fresh_boundary_crack",
+        "red_painted_rule_three",
+        "oil_soaked_gag_cloth",
+        "footprints_to_river",
+        "basement_prison_chains",
+        "feng_jiande_ledger",
+        "shadow_play_drowning_scene",
+        "backdoor_key_from_jiushu"
+      ],
+      "related_locations": ["village_gate", "river_bridge", "old_house", "opera_stage", "ancestral_hall"],
+      "related_rules": ["midnight_paper_eye_taboo", "genealogy_contract_burn_rule", "dead_clothes_disturbance_taboo"],
       "effects": {
-        "activate_flag": "paper_contract_thread_active",
-        "risk_delta": 10
+        "activate_flag": "paper_bride_case_thread_active",
+        "risk_delta": 20
+      },
+      "resolution": {
+        "required_action": "burn_with_white_candle",
+        "target_item": "feng_genealogy_book",
+        "resolve_flag": "lin_wanqiu_released"
       }
     },
     {
-      "id": "family_record_thread",
-      "name": "族谱线",
-      "type": "open_case_thread",
+      "id": "rule_revival_world_thread",
+      "name": "规矩复苏世界线",
+      "type": "world_reveal_thread",
       "status": "inactive",
-      "required_clues": ["missing_genealogy_page"],
-      "optional_clues": ["broken_red_thread", "paper_sleeve_mark"],
-      "related_locations": ["ancestral_hall", "old_house"],
-      "related_rules": ["ancestral_hall_name_taboo"],
+      "premise": "归魂村不是孤立鬼村，而是世界底层规则松动后的第一批重灾区。",
+      "required_clues": ["testament_genealogy_fire_rule", "lin_wanqiu_blood_name_in_genealogy"],
+      "optional_clues": ["microphone_drowning_audio", "fresh_boundary_crack", "dead_clothes_taboo_triggered"],
+      "related_locations": ["ancestral_hall", "village_gate"],
+      "related_rules": ["rule_revival_world_law"],
       "effects": {
-        "activate_flag": "family_record_thread_active",
-        "risk_delta": 5
+        "activate_flag": "rule_revival_world_thread_active",
+        "risk_delta": 10
+      },
+      "first_act_hook": {
+        "trigger": "after_lin_wanqiu_released",
+        "news_tags": ["hospital_morgue_mirror_taboo", "overseas_folk_ban_outbreak", "city_white_light_columns"]
+      }
+    },
+    {
+      "id": "chen_mo_survival_logic_thread",
+      "name": "陈默沉没成本生路线",
+      "type": "protagonist_reasoning_thread",
+      "status": "inactive",
+      "premise": "陈默不是热血破局，而是用极端冷静的成本计算发现唯一生路：烧毁封氏族谱。",
+      "required_clues": ["testament_genealogy_fire_rule", "delivery_white_candles", "lin_wanqiu_blood_name_in_genealogy"],
+      "optional_clues": ["ghost_marriage_contract_clue", "feng_jiande_ledger"],
+      "related_locations": ["opera_stage", "ancestral_hall"],
+      "related_rules": ["genealogy_contract_burn_rule"],
+      "effects": {
+        "activate_flag": "chen_mo_final_choice_available",
+        "risk_delta": -10
       }
     }
   ]

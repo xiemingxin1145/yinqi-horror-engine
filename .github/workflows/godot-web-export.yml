@@ -25,23 +25,24 @@ jobs:
 
       - name: Show Godot version
         run: |
-          set -euxo pipefail
+          set -eu
           which godot
           godot --version
 
       - name: Validate export preset exists
         run: |
+          set -eu
           test -f export_presets.cfg
           grep -q 'name="Web"' export_presets.cfg
 
       - name: Import project in headless mode
         run: |
-          set -euxo pipefail
+          set -eu
           godot --headless --path . --import --quit
 
       - name: Export Web build
         run: |
-          set -euxo pipefail
+          set -eu
           mkdir -p build/web
           godot --headless --path . --export-release "${EXPORT_PRESET}" "${EXPORT_OUTPUT}"
           test -f "${EXPORT_OUTPUT}"

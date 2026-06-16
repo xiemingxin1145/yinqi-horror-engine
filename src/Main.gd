@@ -11,31 +11,32 @@ func _ready() -> void:
 
     GameState.reset()
     ClueStore.reset()
+    DataRegistry.load_all_data(true)
 
-    var world = WorldSim.create_world("地基演示世界")
+    var world = WorldSim.create_world("开放地图演示世界")
     var case_data = FolkloreRules.generate_case_seed(world)
 
-    ClueStore.seed_demo_items()
-    var clue_combo = ClueStore.combine_items("red_thread", "genealogy_page")
+    var location_result = LocationController.enter_location("ancestral_hall")
+    var inspect_result = InteractionController.inspect_item("paper_figure")
+    var taboo_result = InteractionController.perform_item_action("paper_figure", "paint_eye")
+    var storyline_result = StorylineEngine.evaluate_open_threads()
     var npc_plans = NPCBehaviorPlanner.plan_for_all_npcs(world, case_data)
-
-    GameState.set_value("player.fear", 15)
-    GameState.set_value("player.progress", 20)
-    GameState.set_value("player.danger", case_data.get("risk", 0))
-    GameState.set_value("player.clue_pressure", 10)
-
-    var rule_result = FolkloreRules.check_rule_violation({
-        "time": "子时",
-        "item_tag": "paper_figure",
-        "action": "paint_eye"
-    }, case_data)
-
     var director_state = HorrorDirector.evaluate_from_game_state()
     var snapshot = GameState.snapshot()
 
-    status_label.text = _build_status_text(world, case_data, rule_result, director_state, snapshot, npc_plans, clue_combo)
+    status_label.text = _build_status_text(
+        world,
+        case_data,
+        location_result,
+        inspect_result,
+        taboo_result,
+        storyline_result,
+        director_state,
+        snapshot,
+        npc_plans
+    )
 
-func _build_status_text(world: Dictionary, case_data: Dictionary, rule_result: Dictionary, director_state: Dictionary, snapshot: Dictionary, npc_plans: Array, clue_combo: Dictionary) -> String:
+func _build_status_text(world: Dictionary, case_data: Dictionary, location_result: Dictionary, inspect_result: Dictionary, taboo_result: Dictionary, storyline_result: Dictionary, director_state: Dictionary, snapshot: Dictionary, npc_plans: Array) -> String:
     var location_names := []
     for location in world.get("locations", []):
         location_names.append(location.get("name", location.get("id", "unknown")))
@@ -48,23 +49,31 @@ func _build_status_text(world: Dictionary, case_data: Dictionary, rule_result: D
     for plan in npc_plans:
         plan_lines.append("%s:%s" % [plan.get("npc_name", "unknown"), plan.get("action", "idle")])
 
+    var interactable_names := []
+    for item in location_result.get("interactables", []):
+        interactable_names.append(item.get("name", item.get("id", "unknown")))
+
     var data_summary := DataRegistry.summary()
 
-    return "《阴契》地基调试面板\n\nData: locations=%s npcs=%s rules=%s events=%s\nSources: %s\n\nWorld: %s\nLocations: %s\nNPCs: %s\nNPCPlans: %s\n\nCase: %s / %s\nRuleResult: %s\nClues: %s\nClueCombo: %s\nDirector: %s / intensity %s / events=%s\nFlags: %s\n\nEventLog:\n%s" % [
+    return "《阴契》开放地图 + 开放剧情线 调试面板\n\nData: locations=%s npcs=%s rules=%s events=%s interactables=%s storylines=%s\n\nWorld: %s\nLocations: %s\nNPCs: %s\nNPCPlans: %s\n\nCurrentLocation: %s\nInteractables: %s\n\nCase: %s / %s\nInspect: %s\nTabooAction: %s\nOpenStorylines: %s\nClues: %s\nDirector: %s / intensity %s / events=%s\nFlags: %s\n\nEventLog:\n%s" % [
         data_summary.get("locations", 0),
         data_summary.get("npcs", 0),
         data_summary.get("rules", 0),
         data_summary.get("events", 0),
-        data_summary.get("sources", []),
+        data_summary.get("interactables", 0),
+        data_summary.get("storylines", 0),
         world.get("name", "unknown"),
         ", ".join(location_names),
         ", ".join(npc_names),
         ", ".join(plan_lines),
+        location_result.get("location", {}).get("name", "unknown"),
+        ", ".join(interactable_names),
         case_data.get("title", "unknown"),
         case_data.get("location_name", case_data.get("location", "unknown")),
-        rule_result,
+        inspect_result,
+        taboo_result,
+        storyline_result,
         ClueStore.list_item_ids(),
-        clue_combo,
         director_state.get("phase", "unknown"),
         director_state.get("intensity", 0),
         director_state.get("events", []).size(),

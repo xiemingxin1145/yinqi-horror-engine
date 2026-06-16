@@ -37,15 +37,15 @@ animation  → AnimationPlayer
 
 职责：监听 `render_command_created`，把 RenderingDirector 的命令执行到当前场景节点上。
 
-当前 `scenes/Main.tscn` 已加入占位节点：
+当前 `scenes/Main.tscn` 与 `scenes/MapDebug.tscn` 已加入占位节点：
 
 ```text
 AmbientShade         CanvasModulate
 VisualOverlay        ColorRect
-MainLamp             PointLight2D
-PaperAsh             GPUParticles2D
+MainLamp             PointLight2D + GradientTexture2D
+PaperAsh             GPUParticles2D + ParticleProcessMaterial
 HorrorAnimation      AnimationPlayer
-HorrorAudio          AudioStreamPlayer
+HorrorAudio          AudioStreamPlayer + 程序化占位音效
 SceneEffectExecutor  Node + 脚本
 ```
 
@@ -57,6 +57,15 @@ HorrorDirector 事件包
 → SceneEffectExecutor 执行
 → GameState render.executed_commands 记录
 ```
+
+## 已完成节点
+
+- [x] `SceneEffectExecutor.gd`。
+- [x] `MainLamp` 渐变灯光 texture。
+- [x] `PaperAsh` 粒子材质。
+- [x] `HorrorAudio` 程序化占位低频音效。
+- [x] `MapDebug.tscn` 专门调试场景。
+- [x] `project.godot` 启动场景切到 `res://scenes/MapDebug.tscn`。
 
 ## Godot 官方能力映射
 
@@ -124,7 +133,7 @@ incense_smoke 香烟雾气
 
 ## 下一步
 
-1. 给 `PaperAsh` 补 `ParticleProcessMaterial`，让纸灰方向、速度、重力更像真实纸灰。
-2. 给 `MainLamp` 补真实 light texture，让灯光可见。
-3. 给 `HorrorAudio` 接占位音效资源。
-4. 后续拆 `MapDebug.tscn`，不要一直把调试都堆在 Main。
+1. 给 `MapDebug.tscn` 加 `LightOccluder2D` 占位遮挡物。
+2. 加 `SceneTransitionDirector`，让开放地图切地点时有转场。
+3. 把 `RenderingDirector` 的事件命令改成可从 JSON 配置 profile。
+4. 后续把占位音效替换成真实音效资源。

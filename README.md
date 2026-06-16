@@ -1,5 +1,7 @@
 # 阴契 / yinqi-horror-engine
 
+> ⚠️ **任何AI（包括Claude自己再次打开这个仓库时）第一步必须先读 [`AI_GIT_PROTOCOL.md`](./AI_GIT_PROTOCOL.md)**，里面是远程main唯一标准/先pull再推/禁止force push的硬性规则。这条不是建议，是已经因为违反过两次而吃过亏才定下来的。
+
 中式民俗恐怖 + 动态世界模拟 + AI叙事，Godot 4为主引擎的开发仓库。
 
 ## 当前文档状态

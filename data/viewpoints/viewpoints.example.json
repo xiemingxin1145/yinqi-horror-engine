@@ -1,0 +1,77 @@
+{
+  "viewpoints": [
+    {
+      "id": "village_gate_front",
+      "location": "village_gate",
+      "name": "村口正面",
+      "skin": "village_gate",
+      "order": 0,
+      "left": "village_gate_left",
+      "right": "village_gate_right",
+      "hotspots": ["broken_boundary_stone", "village_notice_board"],
+      "exit_to": "river_bridge",
+      "exit_label": "沿雾路前往河桥"
+    },
+    {
+      "id": "village_gate_left",
+      "location": "village_gate",
+      "name": "荒草与报废电瓶车",
+      "skin": "village_gate",
+      "order": 1,
+      "left": "village_gate_right",
+      "right": "village_gate_front",
+      "hotspots": ["fresh_boundary_crack"],
+      "exit_to": "river_bridge",
+      "exit_label": "顺着土路继续走"
+    },
+    {
+      "id": "village_gate_right",
+      "location": "village_gate",
+      "name": "土路与掉落麦克风",
+      "skin": "village_gate",
+      "order": 2,
+      "left": "village_gate_front",
+      "right": "village_gate_left",
+      "hotspots": ["qingqing_microphone"],
+      "exit_to": "river_bridge",
+      "exit_label": "跟着录音里的水声走"
+    },
+    {
+      "id": "river_bridge_front",
+      "location": "river_bridge",
+      "name": "桥头引魂香",
+      "skin": "river_bridge",
+      "order": 0,
+      "left": "river_bridge_rail",
+      "right": "river_bridge_ground",
+      "hotspots": ["oil_soaked_white_cloth"],
+      "exit_to": "old_house",
+      "exit_label": "继续前往老宅",
+      "locked_until": ["lin_wanqiu_student_id"]
+    },
+    {
+      "id": "river_bridge_rail",
+      "location": "river_bridge",
+      "name": "桥栏白布",
+      "skin": "river_bridge",
+      "order": 1,
+      "left": "river_bridge_ground",
+      "right": "river_bridge_front",
+      "hotspots": ["oil_soaked_white_cloth"],
+      "exit_to": "old_house",
+      "exit_label": "离开河桥"
+    },
+    {
+      "id": "river_bridge_ground",
+      "location": "river_bridge",
+      "name": "桥面脚印",
+      "skin": "river_bridge",
+      "order": 2,
+      "left": "river_bridge_front",
+      "right": "river_bridge_rail",
+      "hotspots": ["muddy_grass_shoes", "student_id_necklace"],
+      "exit_to": "old_house",
+      "exit_label": "前往老宅"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "locations": [
+    {
+      "id": "ancestral_hall",
+      "name": "祠堂",
+      "type": "interior",
+      "tags": ["family", "ritual", "night_sensitive"],
+      "risk": 40,
+      "connected_to": ["village_gate", "old_house"],
+      "interactables": ["ancestral_table", "genealogy_book", "paper_figure"]
+    },
+    {
+      "id": "old_house",
+      "name": "老宅",
+      "type": "interior",
+      "tags": ["marriage", "memory", "locked_room"],
+      "risk": 35,
+      "connected_to": ["ancestral_hall", "river_bridge"],
+      "interactables": ["red_thread", "wooden_box", "old_mirror"]
+    }
+  ]
+}

@@ -51,16 +51,31 @@ HotspotController：点击/调查当前热点，调用 InteractionController
 src/MainLoop.gd
 ```
 
-当前已从自动演示改为按钮交互。按钮由 `MainLoop.gd` 运行时动态创建，不强依赖 `MapDebug.tscn` 固定 UI 节点。
+当前按钮由 `MainLoop.gd` 运行时动态创建，不强依赖 `MapDebug.tscn` 固定 UI 节点。
 
-当前按钮：
+当前固定按钮：
 
 ```text
 Left      左转
 Right     右转
-Inspect   调查当前可见热点中的第一个
 Go        前往当前出口
 Restart   重开试玩
+```
+
+当前动态热点按钮：
+
+```text
+根据 ViewpointDirector.get_current_hotspots() 自动生成
+当前视角有几个热点，就显示几个可调查按钮
+点击具体热点后调用 HotspotController.inspect_hotspot(hotspot_id)
+```
+
+当前弹窗：
+
+```text
+AcceptDialog 线索弹窗
+获得线索后显示 clue.name 与 clue.text
+试图进入老宅时显示 Demo End 弹窗
 ```
 
 当前可玩流程：
@@ -68,8 +83,8 @@ Restart   重开试玩
 ```text
 进入村口
 → 左右切视角
-→ 调查当前热点
-→ 获得线索
+→ 选择当前视角具体热点
+→ 获得线索弹窗
 → 前往河桥
 → 在河桥继续切视角和调查
 → 试图前往老宅时显示 V0.1 结束提示
@@ -77,17 +92,17 @@ Restart   重开试玩
 
 ## 当前限制
 
-1. `Inspect` 目前只调查当前视角第一个热点。
-2. 还没有真正的热点列表按钮。
-3. 还没有线索弹窗，只在状态文本里显示结果。
-4. 还没有正式 UI 美术，仅为可玩骨架。
+1. 热点按钮目前最多显示 3 个。
+2. 线索弹窗还是 Godot 默认 AcceptDialog 样式，未套正式 UI 美术。
+3. 还没有真正背景图资源，仅使用 MapSkin 程序化皮肤。
+4. 还没有 APK 构建验证。
 
 ## 下一步
 
-1. 生成动态热点按钮，允许玩家选择具体调查对象。
-2. 添加线索获得弹窗。
-3. 添加试玩版结束页。
-4. 接入资源包背景图，替换程序化地图皮肤。
+1. 接入视觉资产包背景图，替换程序化地图皮肤。
+2. 给线索弹窗套 UI 风格。
+3. 加基础保存 / 读档。
+4. 跑一轮 Claude 审计，检查 GDScript 语法和运行链路。
 
 ## 验收标准
 
@@ -95,7 +110,8 @@ Restart   重开试玩
 打开游戏进入村口
 能看到村口皮肤
 能按 Left / Right 切换视角
-能按 Inspect 获得线索
+能看到当前视角具体热点按钮
+能点击具体热点获得线索弹窗
 能按 Go 切到河桥
 能在河桥获得白布和学生证线索
 能看到试玩版结束提示

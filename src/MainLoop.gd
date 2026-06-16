@@ -1,8 +1,7 @@
 extends Node2D
 
-const InteractionLoopScript := preload("res://src/interactions/InteractionLoop.gd")
-
 @onready var status_label: Label = $Status
+@onready var scene_effect_executor: Node = $SceneEffectExecutor
 
 var event_log: Array[String] = []
 
@@ -13,36 +12,68 @@ func _ready() -> void:
 
     GameState.reset()
     ClueStore.reset()
+    RenderingDirector.clear_commands()
+    DataRegistry.load_all_data(true)
 
-    var world := WorldSim.create_world("foundation_world")
+    var world := WorldSim.create_world("engine_matrix_world")
     var case_data := FolkloreRules.generate_case_seed(world)
-    var npc_plans := NPCBehaviorPlanner.plan_for_all_npcs(world, case_data)
 
-    GameState.set_value("player.fear", 15)
-    GameState.set_value("player.progress", 20)
+    GameState.set_value("player.fear", 18)
+    GameState.set_value("player.progress", 25)
     GameState.set_value("player.danger", case_data.get("risk", 0))
-    GameState.set_value("player.clue_pressure", 10)
+    GameState.set_value("player.clue_pressure", 12)
 
-    var interaction_loop = InteractionLoopScript.new()
-    add_child(interaction_loop)
-    var loop_result: Dictionary = interaction_loop.run_demo()
+    var location_result := LocationController.enter_location("ancestral_hall")
+    var inspect_result := InteractionController.inspect_item("paper_figure")
+    var taboo_result := InteractionController.perform_item_action("paper_figure", "paint_eye")
+    var storyline_result := StorylineEngine.evaluate_open_threads()
+    var npc_plans := NPCBehaviorPlanner.plan_for_all_npcs(world, case_data)
     var director_state := HorrorDirector.evaluate_from_game_state()
+    var engine_summary := EngineHub.summary()
+    var render_commands := RenderingDirector.get_commands()
+    var executed_commands := []
+    if scene_effect_executor != null and scene_effect_executor.has_method("get_executed_commands"):
+        executed_commands = scene_effect_executor.get_executed_commands()
 
-    status_label.text = _build_text(world, case_data, loop_result, director_state, npc_plans)
+    status_label.text = _build_text(
+        world,
+        case_data,
+        location_result,
+        inspect_result,
+        taboo_result,
+        storyline_result,
+        director_state,
+        npc_plans,
+        engine_summary,
+        render_commands,
+        executed_commands
+    )
 
-func _build_text(world: Dictionary, case_data: Dictionary, loop_result: Dictionary, director_state: Dictionary, npc_plans: Array) -> String:
+func _build_text(world: Dictionary, case_data: Dictionary, location_result: Dictionary, inspect_result: Dictionary, taboo_result: Dictionary, storyline_result: Dictionary, director_state: Dictionary, npc_plans: Array, engine_summary: Dictionary, render_commands: Array, executed_commands: Array) -> String:
     var summary := DataRegistry.summary()
     var plans := []
     for plan in npc_plans:
         plans.append("%s:%s" % [plan.get("npc_name", "npc"), plan.get("action", "idle")])
 
-    return "Yinqi foundation loop V0.1\n\nData %s\nWorld %s\nCase %s\nLoop %s\nDirector %s intensity=%s\nNPC %s\nFlags %s\nClues %s\n\nEvents\n%s" % [
+    var interactable_names := []
+    for item in location_result.get("interactables", []):
+        interactable_names.append(item.get("name", item.get("id", "unknown")))
+
+    return "《阴契》Engine Matrix Loop V0.2\n\nEngineHub %s\nData %s\nWorld %s\nCase %s\n\nLocation %s\nInteractables %s\nInspect %s\nTaboo %s\nStorylines %s\n\nDirector %s intensity=%s events=%s\nRenderCommands %s\nExecutedEffects %s\nNPC %s\nFlags %s\nClues %s\n\nEvents\n%s" % [
+        engine_summary,
         summary,
         world.get("name", "world"),
         case_data.get("title", "case"),
-        loop_result,
+        location_result.get("location", {}).get("name", "unknown"),
+        ", ".join(interactable_names),
+        inspect_result,
+        taboo_result,
+        storyline_result,
         director_state.get("phase", "phase"),
         director_state.get("intensity", 0),
+        director_state.get("events", []).size(),
+        render_commands.size(),
+        executed_commands.size(),
         ", ".join(plans),
         GameState.get_value("flags", {}),
         ClueStore.list_item_ids(),

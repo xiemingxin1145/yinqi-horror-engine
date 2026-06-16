@@ -20,7 +20,7 @@ func plan_for_npc(npc: Dictionary, world: Dictionary, case_data: Dictionary) -> 
 
     if fear >= 70:
         return _action("hide", npc, "fear_high")
-    if time == "子时" and npc.get("id") == "paper_master":
+    if time == "子时" and npc.get("id") == "feng_guoping":
         return _action("guard_secret", npc, "midnight_secret_keeper")
     if trust >= 50:
         return _action("share_clue", npc, "trust_high")

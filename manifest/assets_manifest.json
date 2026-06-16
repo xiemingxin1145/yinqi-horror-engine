@@ -1,7 +1,7 @@
 {
   "project": "阴契",
-  "version": "v0.3_FIXED",
-  "source": "阴契-视觉素材标准清单-v0.3.md",
+  "version": "v0.3_synced_to_current_npc_ids",
+  "source": "阴契-视觉素材标准清单-v0.3.md（角色id已同步当前npcs.example.json：feng_jiande/feng_daqiang/feng_guoping/su_qingqing/lin_wanqiu_paper_bride）",
   "counts": {
     "backgrounds": 17,
     "characters": 20,
@@ -127,7 +127,7 @@
       "path": "assets/backgrounds/bg_ancestral_hall_paper_bride_view.png",
       "size": "1920x1080",
       "alpha": false,
-      "description": "封氏祠堂·纸新娘：大厅中央停放着骨架中空的纸新娘，眼眶钉着玉蝉。"
+      "description": "封氏祠堂·纸新娘：骨架中空的纸新娘停在大厅中央，姿态在每次转回来时会有细微差异。"
     },
     {
       "category": "background",
@@ -135,7 +135,7 @@
       "path": "assets/backgrounds/bg_ancestral_hall_clan_view.png",
       "size": "1920x1080",
       "alpha": false,
-      "description": "封氏祠堂·村长与族人：村长封建德与闭眼村民围在祠堂两侧。"
+      "description": "封氏祠堂·村长与村民：封建德站在供桌另一侧，两旁站满闭眼不语的村民。"
     },
     {
       "category": "background",
@@ -143,8 +143,351 @@
       "path": "assets/backgrounds/bg_ancestral_hall_back_exit_view.png",
       "size": "1920x1080",
       "alpha": false,
-      "description": "封氏祠堂·后门退路：后门通向黑暗寒泉，雾气从门缝里涌出。"
+      "description": "封氏祠堂·后门退路：九叔交给陈默的那把钥匙能打开的后门，唯一的退路。"
+    },
+    {
+      "category": "character",
+      "file": "npc_feng_jiande_default.png",
+      "path": "assets/characters/npc_feng_jiande_default.png",
+      "size": "800x1200",
+      "alpha": true,
+      "character_id": "feng_jiande",
+      "pose": "default",
+      "description": "封建德，default。欲望：保住封家香火，掩盖罪行，绝不在乎死多少外人；秘密：买凶拐卖林晚秋、策划阴婚仪式的主谋，老宅暗格里藏着拐卖账本"
+    },
+    {
+      "category": "character",
+      "file": "npc_feng_jiande_close.png",
+      "path": "assets/characters/npc_feng_jiande_close.png",
+      "size": "800x1200",
+      "alpha": true,
+      "character_id": "feng_jiande",
+      "pose": "close",
+      "description": "封建德，close。欲望：保住封家香火，掩盖罪行，绝不在乎死多少外人；秘密：买凶拐卖林晚秋、策划阴婚仪式的主谋，老宅暗格里藏着拐卖账本"
+    },
+    {
+      "category": "character",
+      "file": "npc_feng_jiande_ritual.png",
+      "path": "assets/characters/npc_feng_jiande_ritual.png",
+      "size": "800x1200",
+      "alpha": true,
+      "character_id": "feng_jiande",
+      "pose": "ritual",
+      "description": "封建德，ritual。欲望：保住封家香火，掩盖罪行，绝不在乎死多少外人；秘密：买凶拐卖林晚秋、策划阴婚仪式的主谋，老宅暗格里藏着拐卖账本"
+    },
+    {
+      "category": "character",
+      "file": "npc_feng_jiande_blink_loop.png",
+      "path": "assets/characters/npc_feng_jiande_blink_loop.png",
+      "size": "800x1200",
+      "alpha": true,
+      "character_id": "feng_jiande",
+      "pose": "blink_loop",
+      "description": "封建德，blink_loop。欲望：保住封家香火，掩盖罪行，绝不在乎死多少外人；秘密：买凶拐卖林晚秋、策划阴婚仪式的主谋，老宅暗格里藏着拐卖账本"
+    },
+    {
+      "category": "character",
+      "file": "npc_feng_daqiang_default.png",
+      "path": "assets/characters/npc_feng_daqiang_default.png",
+      "size": "800x1200",
+      "alpha": true,
+      "character_id": "feng_daqiang",
+      "pose": "default",
+      "description": "封大强，default。欲望：娶媳妇、发财，怕事但贪心；秘密：溺杀林晚秋时是他按住她的腿，手里还留着她的学生证项链想敲诈村长"
+    },
+    {
+      "category": "character",
+      "file": "npc_feng_daqiang_close.png",
+      "path": "assets/characters/npc_feng_daqiang_close.png",
+      "size": "800x1200",
+      "alpha": true,
+      "character_id": "feng_daqiang",
+      "pose": "close",
+      "description": "封大强，close。欲望：娶媳妇、发财，怕事但贪心；秘密：溺杀林晚秋时是他按住她的腿，手里还留着她的学生证项链想敲诈村长"
+    },
+    {
+      "category": "character",
+      "file": "npc_feng_daqiang_fear.png",
+      "path": "assets/characters/npc_feng_daqiang_fear.png",
+      "size": "800x1200",
+      "alpha": true,
+      "character_id": "feng_daqiang",
+      "pose": "fear",
+      "description": "封大强，fear。欲望：娶媳妇、发财，怕事但贪心；秘密：溺杀林晚秋时是他按住她的腿，手里还留着她的学生证项链想敲诈村长"
+    },
+    {
+      "category": "character",
+      "file": "npc_feng_daqiang_blink_loop.png",
+      "path": "assets/characters/npc_feng_daqiang_blink_loop.png",
+      "size": "800x1200",
+      "alpha": true,
+      "character_id": "feng_daqiang",
+      "pose": "blink_loop",
+      "description": "封大强，blink_loop。欲望：娶媳妇、发财，怕事但贪心；秘密：溺杀林晚秋时是他按住她的腿，手里还留着她的学生证项链想敲诈村长"
+    },
+    {
+      "category": "character",
+      "file": "npc_feng_guoping_default.png",
+      "path": "assets/characters/npc_feng_guoping_default.png",
+      "size": "800x1200",
+      "alpha": true,
+      "character_id": "feng_guoping",
+      "pose": "default",
+      "description": "九叔，default。欲望：自保，活下去，对林晚秋的死有愧疚但不敢声张；秘密：糊纸时已经发现自己断指长出纸毛，知道规则真的变了，想利用陈默当替死鬼逃出村子"
+    },
+    {
+      "category": "character",
+      "file": "npc_feng_guoping_close.png",
+      "path": "assets/characters/npc_feng_guoping_close.png",
+      "size": "800x1200",
+      "alpha": true,
+      "character_id": "feng_guoping",
+      "pose": "close",
+      "description": "九叔，close。欲望：自保，活下去，对林晚秋的死有愧疚但不敢声张；秘密：糊纸时已经发现自己断指长出纸毛，知道规则真的变了，想利用陈默当替死鬼逃出村子"
+    },
+    {
+      "category": "character",
+      "file": "npc_feng_guoping_ritual.png",
+      "path": "assets/characters/npc_feng_guoping_ritual.png",
+      "size": "800x1200",
+      "alpha": true,
+      "character_id": "feng_guoping",
+      "pose": "ritual",
+      "description": "九叔，ritual。欲望：自保，活下去，对林晚秋的死有愧疚但不敢声张；秘密：糊纸时已经发现自己断指长出纸毛，知道规则真的变了，想利用陈默当替死鬼逃出村子"
+    },
+    {
+      "category": "character",
+      "file": "npc_feng_guoping_blink_loop.png",
+      "path": "assets/characters/npc_feng_guoping_blink_loop.png",
+      "size": "800x1200",
+      "alpha": true,
+      "character_id": "feng_guoping",
+      "pose": "blink_loop",
+      "description": "九叔，blink_loop。欲望：自保，活下去，对林晚秋的死有愧疚但不敢声张；秘密：糊纸时已经发现自己断指长出纸毛，知道规则真的变了，想利用陈默当替死鬼逃出村子"
+    },
+    {
+      "category": "character",
+      "file": "npc_su_qingqing_default.png",
+      "path": "assets/characters/npc_su_qingqing_default.png",
+      "size": "800x1200",
+      "alpha": true,
+      "character_id": "su_qingqing",
+      "pose": "default",
+      "description": "苏青青，default。欲望：靠这条新闻爆火，同时也想活着逃出去，两者她都不愿意放弃；秘密：深夜潜入村子直播蹭流量，目睹仪式后第一反应是偷拍，甚至怂恿别人去点睛拍画面"
+    },
+    {
+      "category": "character",
+      "file": "npc_su_qingqing_close.png",
+      "path": "assets/characters/npc_su_qingqing_close.png",
+      "size": "800x1200",
+      "alpha": true,
+      "character_id": "su_qingqing",
+      "pose": "close",
+      "description": "苏青青，close。欲望：靠这条新闻爆火，同时也想活着逃出去，两者她都不愿意放弃；秘密：深夜潜入村子直播蹭流量，目睹仪式后第一反应是偷拍，甚至怂恿别人去点睛拍画面"
+    },
+    {
+      "category": "character",
+      "file": "npc_su_qingqing_fear.png",
+      "path": "assets/characters/npc_su_qingqing_fear.png",
+      "size": "800x1200",
+      "alpha": true,
+      "character_id": "su_qingqing",
+      "pose": "fear",
+      "description": "苏青青，fear。欲望：靠这条新闻爆火，同时也想活着逃出去，两者她都不愿意放弃；秘密：深夜潜入村子直播蹭流量，目睹仪式后第一反应是偷拍，甚至怂恿别人去点睛拍画面"
+    },
+    {
+      "category": "character",
+      "file": "npc_su_qingqing_blink_loop.png",
+      "path": "assets/characters/npc_su_qingqing_blink_loop.png",
+      "size": "800x1200",
+      "alpha": true,
+      "character_id": "su_qingqing",
+      "pose": "blink_loop",
+      "description": "苏青青，blink_loop。欲望：靠这条新闻爆火，同时也想活着逃出去，两者她都不愿意放弃；秘密：深夜潜入村子直播蹭流量，目睹仪式后第一反应是偷拍，甚至怂恿别人去点睛拍画面"
+    },
+    {
+      "category": "character",
+      "file": "npc_lin_wanqiu_paper_bride_default.png",
+      "path": "assets/characters/npc_lin_wanqiu_paper_bride_default.png",
+      "size": "800x1200",
+      "alpha": true,
+      "character_id": "lin_wanqiu_paper_bride",
+      "pose": "default",
+      "description": "林晚秋 / 纸新娘：烧毁封氏族谱，解除被强写进宗族的阴婚契约。；秘密：她不是普通鬼物，而是归魂村规则复苏后的第一个法则源头。"
+    },
+    {
+      "category": "character",
+      "file": "npc_lin_wanqiu_paper_bride_revisit_1.png",
+      "path": "assets/characters/npc_lin_wanqiu_paper_bride_revisit_1.png",
+      "size": "800x1200",
+      "alpha": true,
+      "character_id": "lin_wanqiu_paper_bride",
+      "pose": "revisit_1",
+      "description": "林晚秋 / 纸新娘：烧毁封氏族谱，解除被强写进宗族的阴婚契约。；秘密：她不是普通鬼物，而是归魂村规则复苏后的第一个法则源头。"
+    },
+    {
+      "category": "character",
+      "file": "npc_lin_wanqiu_paper_bride_revisit_2.png",
+      "path": "assets/characters/npc_lin_wanqiu_paper_bride_revisit_2.png",
+      "size": "800x1200",
+      "alpha": true,
+      "character_id": "lin_wanqiu_paper_bride",
+      "pose": "revisit_2",
+      "description": "林晚秋 / 纸新娘：烧毁封氏族谱，解除被强写进宗族的阴婚契约。；秘密：她不是普通鬼物，而是归魂村规则复苏后的第一个法则源头。"
+    },
+    {
+      "category": "character",
+      "file": "npc_lin_wanqiu_paper_bride_blink_loop.png",
+      "path": "assets/characters/npc_lin_wanqiu_paper_bride_blink_loop.png",
+      "size": "800x1200",
+      "alpha": true,
+      "character_id": "lin_wanqiu_paper_bride",
+      "pose": "blink_loop",
+      "description": "林晚秋 / 纸新娘：烧毁封氏族谱，解除被强写进宗族的阴婚契约。；秘密：她不是普通鬼物，而是归魂村规则复苏后的第一个法则源头。"
+    },
+    {
+      "category": "icon",
+      "file": "clue_fresh_boundary_crack.png",
+      "path": "assets/icons/clue_fresh_boundary_crack.png",
+      "size": "512x512",
+      "alpha": true,
+      "description": "新鲜断口与抓痕：界碑断口极新，石缝里有暗红色抓痕，旁边还有摔烂的摩托车与血迹。"
+    },
+    {
+      "category": "icon",
+      "file": "clue_red_painted_rule_three.png",
+      "path": "assets/icons/clue_red_painted_rule_three.png",
+      "size": "512x512",
+      "alpha": true,
+      "description": "被红漆涂掉的第三条：公约第三条被红漆涂掉，隐约可见：外来人不得留宿。"
+    },
+    {
+      "category": "icon",
+      "file": "clue_microphone_drowning_audio.png",
+      "path": "assets/icons/clue_microphone_drowning_audio.png",
+      "size": "512x512",
+      "alpha": true,
+      "description": "落水声录音：麦克风里残留着惊恐喘息、重物落水声，以及一句被雾气吞掉的求救。"
+    },
+    {
+      "category": "icon",
+      "file": "clue_oil_soaked_gag_cloth.png",
+      "path": "assets/icons/clue_oil_soaked_gag_cloth.png",
+      "size": "512x512",
+      "alpha": true,
+      "description": "香油白布：白布散发着浓重香油味和腐臭味，像是曾被死死缠在人的口鼻上。"
+    },
+    {
+      "category": "icon",
+      "file": "clue_footprints_to_river.png",
+      "path": "assets/icons/clue_footprints_to_river.png",
+      "size": "512x512",
+      "alpha": true,
+      "description": "指向河心的脚印：桥面草鞋凌乱，泥脚印全部指向漆黑的河心。"
+    },
+    {
+      "category": "icon",
+      "file": "clue_lin_wanqiu_student_id.png",
+      "path": "assets/icons/clue_lin_wanqiu_student_id.png",
+      "size": "512x512",
+      "alpha": true,
+      "description": "林晚秋的学生证项链：项链上写着林晚秋，21岁，美术系学生。照片里的人还活着，眼神干净。"
+    },
+    {
+      "category": "icon",
+      "file": "clue_blood_written_injustice.png",
+      "path": "assets/icons/clue_blood_written_injustice.png",
+      "size": "512x512",
+      "alpha": true,
+      "description": "衣袖里的冤字：嫁衣衣袖内侧有大片血迹，布料里被指甲抓出了一个冤字。"
+    },
+    {
+      "category": "icon",
+      "file": "clue_basement_prison_chains.png",
+      "path": "assets/icons/clue_basement_prison_chains.png",
+      "size": "512x512",
+      "alpha": true,
+      "description": "囚禁铁链：地下室墙上固定着铁镣铐，地上散着发霉剩饭和被撕碎的画纸。"
+    },
+    {
+      "category": "icon",
+      "file": "clue_ghost_marriage_contract_clue.png",
+      "path": "assets/icons/clue_ghost_marriage_contract_clue.png",
+      "size": "512x512",
+      "alpha": true,
+      "description": "阴婚聘书：聘书上写着以骨为媒，宣纸为肉，林晚秋被强行配给封家亡子。"
+    },
+    {
+      "category": "icon",
+      "file": "clue_feng_jiande_ledger.png",
+      "path": "assets/icons/clue_feng_jiande_ledger.png",
+      "size": "512x512",
+      "alpha": true,
+      "description": "封建德的账本：账本记录了买人、封口、阴婚开销，封建德是整件事的主谋。"
+    },
+    {
+      "category": "icon",
+      "file": "clue_paper_tools_with_bone_dust.png",
+      "path": "assets/icons/clue_paper_tools_with_bone_dust.png",
+      "size": "512x512",
+      "alpha": true,
+      "description": "沾骨粉的扎纸工具：工具缝里嵌着白色骨粉，刀口边缘还有发黑的纸屑。"
+    },
+    {
+      "category": "icon",
+      "file": "clue_testament_genealogy_fire_rule.png",
+      "path": "assets/icons/clue_testament_genealogy_fire_rule.png",
+      "size": "512x512",
+      "alpha": true,
+      "description": "族谱解契规则：纸人有骨，其魂在目。子时至，万不可点睛。欲解其缚，唯有断其名分。族谱燃，则名分消散，阴阳锁自解；寻常凡火不可伤族谱，必以引路业火白蜡烛引燃。"
+    },
+    {
+      "category": "icon",
+      "file": "clue_shadow_play_drowning_scene.png",
+      "path": "assets/icons/clue_shadow_play_drowning_scene.png",
+      "size": "512x512",
+      "alpha": true,
+      "description": "按入水中的皮影：手电照上去，幕布自动投出三个人影将一个娇小人影按入水中的画面。"
+    },
+    {
+      "category": "icon",
+      "file": "clue_backdoor_key_from_jiushu.png",
+      "path": "assets/icons/clue_backdoor_key_from_jiushu.png",
+      "size": "512x512",
+      "alpha": true,
+      "description": "九叔交出的后门钥匙：九叔把钥匙塞给陈默，让他去祠堂送蜡烛，语气里像藏着另一层算计。"
+    },
+    {
+      "category": "icon",
+      "file": "clue_paper_bride_empty_bone_frame.png",
+      "path": "assets/icons/clue_paper_bride_empty_bone_frame.png",
+      "size": "512x512",
+      "alpha": true,
+      "description": "骨架中空的纸新娘：宣纸下不是竹篾，而是一具被剔净的骨架。眼眶位置钉着两枚陪葬玉蝉。"
+    },
+    {
+      "category": "icon",
+      "file": "clue_lin_wanqiu_blood_name_in_genealogy.png",
+      "path": "assets/icons/clue_lin_wanqiu_blood_name_in_genealogy.png",
+      "size": "512x512",
+      "alpha": true,
+      "description": "族谱上的林晚秋：封家亡子名字旁边，林晚秋三个字被鲜血强行勾入偏房名分，正和《扎纸遗书》的族谱为锁完全吻合。"
+    },
+    {
+      "category": "icon",
+      "file": "clue_blood_cinnabar_eye_tool.png",
+      "path": "assets/icons/clue_blood_cinnabar_eye_tool.png",
+      "size": "512x512",
+      "alpha": true,
+      "description": "点睛工具：朱砂里混着新鲜活人血，只等子时给纸新娘点睛。"
+    },
+    {
+      "category": "icon",
+      "file": "clue_delivery_white_candles.png",
+      "path": "assets/icons/clue_delivery_white_candles.png",
+      "size": "512x512",
+      "alpha": true,
+      "description": "引路业火白蜡烛：这箱跑腿单里的白蜡烛，正是《扎纸遗书》里能引燃族谱的引路业火。"
     }
-  ],
-  "note": "Full v0.3 asset pack contains 55 PNG slots. This manifest first pins stable paths for Godot integration; binary PNG import is handled separately."
+  ]
 }

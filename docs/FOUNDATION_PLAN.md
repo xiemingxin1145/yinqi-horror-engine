@@ -61,6 +61,14 @@
 
 后续所有 JSON 数据都先进入 DataRegistry，再被系统调用。
 
+### ClueStore
+
+线索库。负责获得线索、查询线索、简单组合线索，并同步写入 GameState。
+
+### NPCBehaviorPlanner
+
+轻量行为规划器。先不接 beehave，用自研结构模拟 NPC 行为选择。
+
 ## 为什么不急着写剧情
 
 剧情现在写死，会造成三个问题：
@@ -71,10 +79,31 @@
 
 所以第一阶段只允许写“示例数据”，不写正式剧情。
 
-## 下一步任务
+## 当前地基完成状态
 
-1. 把 WorldSim 改成从 DataRegistry 生成世界。
-2. 把 FolkloreRules 改成读取规则模板。
-3. 把 HorrorDirector 的事件包接到 EventBus。
-4. 把 Main.gd 改成地基演示，不再写死剧情文本。
-5. 增加 data/ 目录，用 JSON 管地点、NPC、规则、事件。
+- [x] `EventBus` 全局事件总线。
+- [x] `GameState` 全局状态仓库。
+- [x] `DataRegistry` 数据注册中心。
+- [x] `DataRegistry.load_all_data()` 读取 `data/*.json`。
+- [x] `WorldSim` 从 `DataRegistry` 生成世界。
+- [x] `FolkloreRules` 从规则模板判定禁忌。
+- [x] `HorrorDirector` 从 `GameState.player` 生成事件包，并通过 `EventBus` 发出。
+- [x] `ClueStore` 线索库接入 `GameState` 和 `EventBus`。
+- [x] `NPCBehaviorPlanner` 生成 NPC 行为计划，并写回 `GameState`。
+- [x] `Main.gd` 调试面板显示数据加载、世界、NPC、规则、线索、恐怖事件、事件日志。
+
+## 下一阶段
+
+地基完成后，进入“最小可玩循环”：
+
+```text
+进入地点
+→ 调查物品
+→ 获得线索
+→ 触发民俗规则
+→ 改变风险值
+→ HorrorDirector触发氛围事件
+→ NPC根据记忆/恐惧改变行为
+```
+
+此阶段依旧不写正式剧情，只做系统闭环。

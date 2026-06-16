@@ -1,7 +1,7 @@
 extends Node
 
 func create_world(world_name: String) -> Dictionary:
-    DataRegistry.seed_minimal_demo_data()
+    DataRegistry.load_all_data()
 
     var locations := []
     for location_id in DataRegistry.locations.keys():
@@ -15,9 +15,11 @@ func create_world(world_name: String) -> Dictionary:
         npcs.append({
             "id": npc_id,
             "name": template.get("name", npc_id),
+            "role": template.get("role", "unknown"),
             "fear": template.get("base_fear", 0),
             "trust": template.get("base_trust", 0),
-            "tags": template.get("tags", [])
+            "tags": template.get("tags", []),
+            "home_location": template.get("home_location", "")
         })
 
     var world := {

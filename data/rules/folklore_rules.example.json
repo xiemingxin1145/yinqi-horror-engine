@@ -1,0 +1,33 @@
+{
+  "rules": [
+    {
+      "id": "midnight_paper_eye_taboo",
+      "name": "子时不可点睛",
+      "trigger": "item_action",
+      "conditions": {
+        "time": "子时",
+        "item_tag": "paper_figure",
+        "action": "paint_eye"
+      },
+      "effects": {
+        "risk_delta": 30,
+        "event": "paper_figure_moves",
+        "flag": "paper_eye_taboo_broken"
+      }
+    },
+    {
+      "id": "ancestral_hall_name_taboo",
+      "name": "祠堂不可直呼亡者名",
+      "trigger": "dialogue_action",
+      "conditions": {
+        "location": "ancestral_hall",
+        "dialogue_tag": "dead_name"
+      },
+      "effects": {
+        "risk_delta": 20,
+        "event": "tablet_crack",
+        "flag": "dead_name_called"
+      }
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "storylines": [
+    {
+      "id": "paper_contract_thread",
+      "name": "纸契线",
+      "type": "open_case_thread",
+      "status": "inactive",
+      "required_clues": ["paper_sleeve_mark", "missing_genealogy_page"],
+      "optional_clues": ["broken_red_thread"],
+      "related_locations": ["ancestral_hall", "old_house", "river_bridge"],
+      "related_rules": ["midnight_paper_eye_taboo"],
+      "effects": {
+        "activate_flag": "paper_contract_thread_active",
+        "risk_delta": 10
+      }
+    },
+    {
+      "id": "family_record_thread",
+      "name": "族谱线",
+      "type": "open_case_thread",
+      "status": "inactive",
+      "required_clues": ["missing_genealogy_page"],
+      "optional_clues": ["broken_red_thread", "paper_sleeve_mark"],
+      "related_locations": ["ancestral_hall", "old_house"],
+      "related_rules": ["ancestral_hall_name_taboo"],
+      "effects": {
+        "activate_flag": "family_record_thread_active",
+        "risk_delta": 5
+      }
+    }
+  ]
+}

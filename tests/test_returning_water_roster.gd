@@ -1,15 +1,47 @@
 extends Node
 
 var failures: Array[String] = []
+var checks: Array[Dictionary] = []
+var checkpoints: Array[Dictionary] = []
+var report_directory := ""
+var run_started_at := ""
 
 
 func _ready() -> void:
+    report_directory = OS.get_environment("RWR_TEST_OUTPUT_DIR")
+    if report_directory.is_empty():
+        report_directory = ProjectSettings.globalize_path("user://returning_water_regression")
+    elif not report_directory.is_absolute_path():
+        report_directory = ProjectSettings.globalize_path(report_directory)
+    DirAccess.make_dir_recursive_absolute(report_directory.path_join("screenshots"))
+    run_started_at = Time.get_datetime_string_from_system(true)
     call_deferred("_run")
 
 
 func _expect(condition: bool, message: String) -> void:
+    checks.append({"name": message, "passed": condition})
     if not condition:
         failures.append(message)
+
+
+func _capture_checkpoint(scene: Variant, checkpoint_name: String) -> void:
+    await get_tree().process_frame
+    await get_tree().process_frame
+    var relative_path := "screenshots/%s.png" % checkpoint_name
+    var absolute_path := report_directory.path_join(relative_path)
+    var image: Image = scene.get_viewport().get_texture().get_image()
+    var saved := image != null and not image.is_empty() and image.save_png(absolute_path) == OK
+    _expect(saved, "viewport screenshot saved: %s" % checkpoint_name)
+    checkpoints.append({
+        "name": checkpoint_name,
+        "screen": str(scene.current_screen),
+        "viewpoint": str(scene.current_viewpoint_id),
+        "core_clues": int(scene.get_core_clue_count()),
+        "wrong_attempts": int(scene.wrong_attempts),
+        "case_resolved": bool(scene.case_resolved),
+        "screenshot": relative_path,
+        "screenshot_saved": saved
+    })
 
 
 func _collect_buttons(root: Node, wanted_text: String, found: Array[Button]) -> void:
@@ -161,6 +193,7 @@ func _run() -> void:
     _expect(viewport_size.x > 0.0 and viewport_size.y > 0.0, "headless touch test has a real viewport")
     _expect(absf(viewport_size.x / viewport_size.y - 16.0 / 9.0) < 0.03, "test viewport matches the 16:9 mobile game layout")
     _expect(scene.current_screen == "title", "title page is the opening state")
+    await _capture_checkpoint(scene, "title-launch")
     var registry: Node = get_node("/root/DataRegistry")
     var registered_locations: Dictionary = registry.get("locations")
     var registered_interactables: Dictionary = registry.get("interactable_templates")
@@ -189,6 +222,7 @@ func _run() -> void:
     if slider != null:
         _expect(await _drag_slider(scene, slider, float(desired_volume) / 100.0), "audio volume slider accepts a real screen-touch drag")
     _expect(absi(scene.volume_percent - desired_volume) <= 5, "touch-dragging the slider updates the stored volume")
+    await _capture_checkpoint(scene, "settings-volume-touch")
     var persisted_flash: bool = scene.flash_enabled
     var persisted_volume: int = scene.volume_percent
     _expect(await _tap_button(scene, "返回"), "settings return button accepts a screen touch")
@@ -198,6 +232,15 @@ func _run() -> void:
     game_viewport.add_child(settings_probe)
     await get_tree().process_frame
     _expect(settings_probe.flash_enabled == persisted_flash and settings_probe.volume_percent == persisted_volume, "settings persist across a fresh scene load")
+    checkpoints.append({
+        "name": "settings-save-reload",
+        "screen": str(settings_probe.current_screen),
+        "flash_enabled": bool(settings_probe.flash_enabled),
+        "volume_percent": int(settings_probe.volume_percent),
+        "persisted_values_match": settings_probe.flash_enabled == persisted_flash and settings_probe.volume_percent == persisted_volume,
+        "screenshot": "screenshots/settings-volume-touch.png",
+        "screenshot_saved": true
+    })
     settings_probe.queue_free()
     await get_tree().process_frame
 
@@ -206,6 +249,7 @@ func _run() -> void:
     _expect(await _tap_button(scene, "走近村口"), "intro continue button accepts a screen touch")
     _expect(scene.current_screen == "game", "intro enters the playable chapter")
     _expect(scene.current_viewpoint_id == "village_gate_front", "chapter begins at the real village gate viewpoint")
+    await _capture_checkpoint(scene, "location-village-gate")
 
     var locked_exits := _buttons_with_text(scene._ui, "沿雾路前往河桥")
     _expect(locked_exits.size() == 1 and locked_exits[0].disabled, "gate route button is visibly locked before the two required clues")
@@ -230,6 +274,7 @@ func _run() -> void:
     _expect(scene.current_viewpoint_id == "village_gate_right", "right gate viewpoint is reachable by UI")
     _expect(await _tap_button(scene, "沿雾路前往河桥"), "unlocked gate exit accepts touch from the right viewpoint")
     _expect(scene.current_viewpoint_id == "river_bridge_front", "right gate route reaches the real bridge viewpoint")
+    await _capture_checkpoint(scene, "location-river-bridge")
 
     var premature_boat_buttons := _buttons_with_text(scene._ui, "查看三只纸船")
     _expect(premature_boat_buttons.size() == 1 and premature_boat_buttons[0].disabled, "paper-boat decision remains locked until all five clues")
@@ -250,6 +295,7 @@ func _run() -> void:
     _expect(cloth_text.contains("L.W.") and footprint_text.contains("河边"), "cloth initials and footprints support the identity/location inference")
     _expect(await _tap_button(scene, "线索簿 5/5"), "clue-journal control accepts touch")
     _expect(scene.current_screen == "journal", "clue journal opens from the actual button")
+    await _capture_checkpoint(scene, "five-clues-journal")
     _expect(await _tap_button(scene, "回到现场"), "clue journal returns to the bridge")
     _expect(await _tap_button(scene, "查看三只纸船"), "boat decision unlocks after all five clues")
     _expect(scene.current_screen == "boat", "three boat cards are visible")
@@ -267,11 +313,13 @@ func _run() -> void:
     _expect(is_instance_valid(scene._chase_overlay) and scene._chase_overlay.is_visible_in_tree(), "a visible moving-shadow pursuit appears instead of audio-only scare")
     _expect(not scene._flash.visible, "pursuit remains visible with optional flash disabled")
     _expect(scene.get_core_clue_count() == 5, "failure keeps all five clues")
+    await _capture_checkpoint(scene, "wrong-choice-recovery")
     await get_tree().create_timer(1.1).timeout
     await get_tree().process_frame
     _expect(scene.current_screen == "failure" and not is_instance_valid(scene._chase_overlay), "one-second pursuit finishes without blocking retry")
     _expect(await _tap_button(scene, "回桥头重试"), "retry button accepts touch")
     _expect(await _tap_button(scene, "查看三只纸船"), "boat choice reopens on retry")
+    await _capture_checkpoint(scene, "recovery-retry-choice")
     _expect(await _tap_button(scene, "放下这只", 1), "second boat card accepts touch")
     _expect(scene.current_screen == "release", "correct boat starts the three-beat river release")
     await get_tree().create_timer(1.1).timeout
@@ -296,12 +344,14 @@ func _run() -> void:
     _expect(not is_instance_valid(scene._chase_overlay), "pursuit overlay is cleared when the case resolves")
     _expect(await _tap_button(scene, "查看结案记录"), "exit vignette continue button accepts touch")
     _expect(scene.current_screen == "ending", "success shows the formal case-closed page")
+    await _capture_checkpoint(scene, "correct-ending")
     var game_state: Node = get_node("/root/GameState")
     _expect(bool(game_state.call("has_flag", "returning_water_roster_resolved")), "shared game state receives the chapter completion flag")
 
     _expect(await _tap_button(scene, "再玩一次"), "replay entry accepts touch")
     await get_tree().process_frame
     _expect(scene.current_screen == "intro", "replay starts a fresh run")
+    await _capture_checkpoint(scene, "replay-start")
     _expect(scene.get_core_clue_count() == 0, "replay clears clues")
     _expect(scene.wrong_attempts == 0 and not scene.scare_played and scene.chase_sequence_count == 0, "replay clears errors and pursuit state")
     _expect(not scene.case_resolved and not scene.hint_viewed, "replay clears ending and hint state")
@@ -319,10 +369,40 @@ func _run() -> void:
 
 
 func _finish() -> void:
-    if failures.is_empty():
-        print("RWR_SELF_TEST_PASS: real screen-touch UI path, 16:9 hit-area bounds, persistent settings, both gate exits, five clues, nameplate inspection, three-beat river release, single visible pursuit, recoverable errors, clear-fog exit, silent ending, and clean replay")
+    var passed_count := 0
+    for check in checks:
+        if bool(check.get("passed", false)):
+            passed_count += 1
+    var success := failures.is_empty()
+    var report := {
+        "schema_version": 1,
+        "suite": "returning_water_roster_regression",
+        "engine_version": Engine.get_version_info().string,
+        "started_at_utc": run_started_at,
+        "finished_at_utc": Time.get_datetime_string_from_system(true),
+        "result": "passed" if success else "failed",
+        "simulated_touch": true,
+        "real_device_validation": false,
+        "check_count": checks.size(),
+        "passed_count": passed_count,
+        "failure_count": failures.size(),
+        "failures": failures,
+        "checks": checks,
+        "checkpoints": checkpoints
+    }
+    var report_path := report_directory.path_join("report.json")
+    var report_file := FileAccess.open(report_path, FileAccess.WRITE)
+    if report_file == null:
+        push_error("RWR_SELF_TEST_FAIL: cannot write JSON report at %s" % report_path)
+        get_tree().quit(2)
+        return
+    report_file.store_string(JSON.stringify(report, "    ") + "\n")
+    report_file.close()
+    if success:
+        print("RWR_SELF_TEST_PASS: %d/%d checks; JSON report: %s" % [passed_count, checks.size(), report_path])
         get_tree().quit(0)
         return
     for failure in failures:
         push_error("RWR_SELF_TEST_FAIL: " + failure)
+    print("RWR_SELF_TEST_FAIL: JSON report: %s" % report_path)
     get_tree().quit(1)

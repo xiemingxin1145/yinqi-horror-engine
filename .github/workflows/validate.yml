@@ -31,26 +31,51 @@ jobs:
         run: |
           test -f project.godot
           test -f scenes/MapDebug.tscn
+          test -f scenes/ReturningWaterRoster.tscn
+          test -f data/returning_water/chapter.json
           test -f src/MainLoop.gd
+          test -f src/chapter/ReturningWaterRoster.gd
           test -f src/viewpoints/ViewpointDirector.gd
           test -f src/hotspots/HotspotController.gd
           test -f src/rendering/SceneEffectExecutor.gd
           test -f manifest/assets_manifest.json
 
-      - name: Validate V0.1 viewpoint asset bindings
+      - name: Validate Android-only chapter entry
+        run: |
+          grep -Fx 'run/main_scene="res://scenes/MapDebug.tscn"' project.godot
+          grep -Fx 'run/main_scene.android="res://scenes/ReturningWaterRoster.tscn"' project.godot
+          grep -Fx 'config/name.android="阴契：回水名册"' project.godot
+          grep -Fx 'window/handheld/orientation.android=0' project.godot
+          test -f assets/returning_water/backgrounds/gate_exit_clear.webp
+
+      - name: Validate Android chapter data boundary and asset bindings
         run: |
           python3 - <<'PY'
           import json
           from pathlib import Path
-          data = json.loads(Path('data/viewpoints/viewpoints.example.json').read_text(encoding='utf-8'))
+          data = json.loads(Path('data/returning_water/chapter.json').read_text(encoding='utf-8'))
+          locations = {item['id']: item for item in data['locations']}
+          assert set(locations) == {'village_gate', 'river_bridge'}, f'unexpected Android chapter locations: {set(locations)}'
+          for item in locations.values():
+              assert set(item.get('connected_to', [])) <= {'village_gate', 'river_bridge'}, f'chapter location links outside scope: {item}'
+          item_ids = {item['id'] for item in data['interactables']}
+          assert item_ids == {'broken_boundary_stone','village_notice_board','qingqing_microphone','oil_soaked_white_cloth','muddy_grass_shoes','student_id_necklace'}, f'unexpected chapter interactables: {item_ids}'
+          viewpoints = {item['id']: item for item in data['viewpoints']}
           required = ['village_gate_front','village_gate_left','village_gate_right','river_bridge_front','river_bridge_rail','river_bridge_ground']
-          by_id = {item['id']: item for item in data['viewpoints']}
           for key in required:
-              assert key in by_id, f'missing viewpoint {key}'
-              assert by_id[key].get('background_asset','').startswith('res://assets/backgrounds/'), f'missing background_asset for {key}'
-          print('V0.1 viewpoint bindings OK')
+              assert key in viewpoints, f'missing viewpoint {key}'
+              asset = viewpoints[key].get('background_asset','')
+              assert asset.startswith('res://assets/returning_water/backgrounds/'), f'wrong background_asset for {key}: {asset}'
+              assert Path(asset.removeprefix('res://')).is_file(), f'missing background binary for {key}: {asset}'
+          assert len(viewpoints) == 6, f'Android chapter should expose exactly six viewpoints, got {len(viewpoints)}'
+          rule = next(item for item in data['interactables'] if item['id'] == 'village_notice_board')['clue']['text']
+          assert '虚构村规' in rule and '非现实民俗' in rule and '子时河里有人呼名，不可应声' in rule
+          text = json.dumps(data, ensure_ascii=False)
+          for forbidden in ('old_house','opera_stage','ancestral_hall','冥婚'):
+              assert forbidden not in text, f'Android chapter data leaked out-of-scope content: {forbidden}'
+          print('Android chapter data boundary and V0.1 viewpoint bindings OK')
           PY
 
       - name: Asset binary reminder
         run: |
-          echo 'NOTE: This workflow validates manifests and bindings. PNG binaries should be uploaded under assets/backgrounds, assets/characters, assets/icons before final Godot export.'
+          echo 'NOTE: The standalone Returning Water Roster uses seven checked-in WebP backgrounds, a packaged CJK font, and original audio assets under assets/returning_water. Legacy unrelated asset folders are not this chapter\x27s art source.'

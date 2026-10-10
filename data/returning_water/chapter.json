@@ -1,0 +1,224 @@
+{
+  "locations": [
+    {
+      "id": "village_gate",
+      "name": "归魂村村口",
+      "type": "exterior",
+      "chapter_role": "opening_gate_and_exit_block",
+      "tags": ["fog", "boundary", "signal_dead_zone"],
+      "risk": 25,
+      "connected_to": ["river_bridge"],
+      "interactables": ["broken_boundary_stone", "village_notice_board", "qingqing_microphone"]
+    },
+    {
+      "id": "river_bridge",
+      "name": "河桥",
+      "type": "exterior",
+      "chapter_role": "death_site_and_first_conflict",
+      "tags": ["cold", "river", "drowning"],
+      "risk": 45,
+      "connected_to": ["village_gate"],
+      "interactables": ["oil_soaked_white_cloth", "muddy_grass_shoes", "student_id_necklace"]
+    }
+  ],
+  "interactables": [
+    {
+      "id": "broken_boundary_stone",
+      "name": "断裂的归魂村界碑",
+      "location": "village_gate",
+      "tags": ["boundary", "fresh_crack", "optional_clue"],
+      "default_action": "inspect",
+      "clue": {
+        "id": "fresh_boundary_crack",
+        "name": "新鲜断口与抓痕",
+        "tags": ["village_gate", "escape", "boundary"],
+        "text": "界碑断口极新，浅拖痕延向村外河道；没有可确认的血迹或伤者。"
+      }
+    },
+    {
+      "id": "village_notice_board",
+      "name": "归魂村村民公约",
+      "location": "village_gate",
+      "tags": ["notice", "village_rules", "forbidden_lodging"],
+      "default_action": "inspect",
+      "clue": {
+        "id": "red_painted_rule_three",
+        "name": "被红漆涂掉的第三条",
+        "tags": ["village_rule", "outsider"],
+        "text": "【归魂村虚构村规·非现实民俗】第三条被红漆涂掉，残文可辨：“子时河里有人呼名，不可应声；纸船顺水送名。”"
+      }
+    },
+    {
+      "id": "qingqing_microphone",
+      "name": "苏青青的备用麦克风",
+      "location": "village_gate",
+      "tags": ["recording", "qingqing", "river_hint"],
+      "default_action": "inspect",
+      "clue": {
+        "id": "microphone_drowning_audio",
+        "name": "落水声录音",
+        "tags": ["river_bridge", "drowning", "qingqing"],
+        "text": "【录音文字稿·苏青青】“……桥上……别喊名字……船要顺着水……晚秋，你听见没有？”随后传来急促喘息和重物落水声，录音中断。"
+      }
+    },
+    {
+      "id": "oil_soaked_white_cloth",
+      "name": "浸水白布条",
+      "location": "river_bridge",
+      "tags": ["white_cloth", "sesame_oil", "drowning"],
+      "default_action": "inspect",
+      "clue": {
+        "id": "oil_soaked_gag_cloth",
+        "name": "香油白布",
+        "tags": ["white_cloth", "sesame_oil", "river_bridge"],
+        "text": "布条浸透河水，布角有淡淡香油气味并留有挣扯痕，缝线间可辨出字母 L.W.。它从桥栏方向被扯落，不能单凭气味确认用途。"
+      }
+    },
+    {
+      "id": "muddy_grass_shoes",
+      "name": "凌乱草鞋与脚印",
+      "location": "river_bridge",
+      "tags": ["footprints", "river", "struggle"],
+      "default_action": "inspect",
+      "clue": {
+        "id": "footprints_to_river",
+        "name": "指向河心的脚印",
+        "tags": ["footprints", "river", "bridge"],
+        "text": "几枚泥脚印从村内一侧沿桥面直达河边，在栏杆前戛然而止；它能说明有人到过水边，不能单独证明生死。"
+      }
+    },
+    {
+      "id": "student_id_necklace",
+      "name": "学生证项链",
+      "location": "river_bridge",
+      "tags": ["lin_wanqiu", "identity", "evidence"],
+      "default_action": "inspect",
+      "clue": {
+        "id": "lin_wanqiu_student_id",
+        "name": "林晚秋的学生证项链",
+        "tags": ["identity", "lin_wanqiu", "victim"],
+        "text": "证件可辨：林晚秋，21岁，美术系学生。姓名与证件照将该物证指向具体的人；照片仍是一张普通学生证照。"
+      }
+    }
+  ],
+  "map_skins": [
+    {
+      "id": "village_gate",
+      "location": "village_gate",
+      "name": "归魂村口冷雾皮肤",
+      "palette": {
+        "background": "#061014",
+        "ambient": "#08161A",
+        "overlay": "#00000055",
+        "light": "#7AB0C0"
+      },
+      "layers": [
+        {"type": "backdrop", "name": "村口夜雾", "rect": [0, 0, 1280, 720], "color": "#061014"},
+        {"type": "foreground", "name": "雾幕", "rect": [0, 340, 1280, 210], "color": "#8BC4D022"}
+      ],
+      "lights": [
+        {"id": "gate_lamp", "position": [930, 300], "energy": 0.5, "scale": 2.8, "color": "#7AB0C0"}
+      ],
+      "particles": ["mist"],
+      "ambient_tags": ["fog", "night", "boundary"]
+    },
+    {
+      "id": "river_bridge",
+      "location": "river_bridge",
+      "name": "河桥冷雾皮肤",
+      "palette": {
+        "background": "#061014",
+        "ambient": "#08161A",
+        "overlay": "#00000055",
+        "light": "#7AB0C0"
+      },
+      "layers": [
+        {"type": "backdrop", "name": "夜河", "rect": [0, 0, 1280, 720], "color": "#061014"},
+        {"type": "panel", "name": "桥面", "rect": [200, 430, 880, 80], "color": "#1A2728"},
+        {"type": "foreground", "name": "水雾", "rect": [0, 320, 1280, 220], "color": "#8BC4D022"}
+      ],
+      "lights": [
+        {"id": "cold_moon", "position": [880, 130], "energy": 0.6, "scale": 4.2, "color": "#7AB0C0"}
+      ],
+      "particles": ["mist", "rain_loop"],
+      "ambient_tags": ["water", "fog", "cold", "bridge"]
+    }
+  ],
+  "viewpoints": [
+    {
+      "id": "village_gate_front",
+      "location": "village_gate",
+      "name": "村口正面",
+      "skin": "village_gate",
+      "background_asset": "res://assets/returning_water/backgrounds/gate_front.webp",
+      "order": 0,
+      "left": "village_gate_left",
+      "right": "village_gate_right",
+      "hotspots": ["broken_boundary_stone", "village_notice_board"],
+      "exit_to": "river_bridge",
+      "exit_label": "沿雾路前往河桥",
+      "locked_until": ["microphone_drowning_audio", "red_painted_rule_three"]
+    },
+    {
+      "id": "village_gate_left",
+      "location": "village_gate",
+      "name": "荒草与报废电瓶车",
+      "skin": "village_gate",
+      "background_asset": "res://assets/returning_water/backgrounds/gate_tracks.webp",
+      "order": 1,
+      "left": "village_gate_right",
+      "right": "village_gate_front",
+      "hotspots": ["broken_boundary_stone"],
+      "exit_to": "river_bridge",
+      "exit_label": "顺着土路继续走",
+      "locked_until": ["microphone_drowning_audio", "red_painted_rule_three"]
+    },
+    {
+      "id": "village_gate_right",
+      "location": "village_gate",
+      "name": "土路与掉落麦克风",
+      "skin": "village_gate",
+      "background_asset": "res://assets/returning_water/backgrounds/gate_microphone.webp",
+      "order": 2,
+      "left": "village_gate_front",
+      "right": "village_gate_left",
+      "hotspots": ["qingqing_microphone"],
+      "exit_to": "river_bridge",
+      "exit_label": "跟着录音里的水声走",
+      "locked_until": ["microphone_drowning_audio", "red_painted_rule_three"]
+    },
+    {
+      "id": "river_bridge_front",
+      "location": "river_bridge",
+      "name": "桥头白灯",
+      "skin": "river_bridge",
+      "background_asset": "res://assets/returning_water/backgrounds/bridge_lamp.webp",
+      "order": 0,
+      "left": "river_bridge_rail",
+      "right": "river_bridge_ground",
+      "hotspots": []
+    },
+    {
+      "id": "river_bridge_rail",
+      "location": "river_bridge",
+      "name": "桥栏白布",
+      "skin": "river_bridge",
+      "background_asset": "res://assets/returning_water/backgrounds/bridge_cloth.webp",
+      "order": 1,
+      "left": "river_bridge_ground",
+      "right": "river_bridge_front",
+      "hotspots": ["oil_soaked_white_cloth"]
+    },
+    {
+      "id": "river_bridge_ground",
+      "location": "river_bridge",
+      "name": "桥面脚印",
+      "skin": "river_bridge",
+      "background_asset": "res://assets/returning_water/backgrounds/bridge_footprints.webp",
+      "order": 2,
+      "left": "river_bridge_front",
+      "right": "river_bridge_rail",
+      "hotspots": ["muddy_grass_shoes", "student_id_necklace"]
+    }
+  ]
+}

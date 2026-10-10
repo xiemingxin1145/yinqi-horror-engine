@@ -1,0 +1,7 @@
+# Godot local editor/import cache
+.godot/
+*.import
+*.gd.uid
+
+# Local Android build outputs
+/build/

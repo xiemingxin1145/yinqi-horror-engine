@@ -5,9 +5,12 @@ config_version=5
 
 [application]
 config/name="Yinqi Horror Engine"
+config/name.android="阴契：回水名册"
 run/main_scene="res://scenes/MapDebug.tscn"
+run/main_scene.android="res://scenes/ReturningWaterRoster.tscn"
 config/features=PackedStringArray("4.2", "Mobile")
 config/icon="res://icon.svg"
+config/icon.android="res://assets/returning_water/icons/app_icon_512.png"
 
 [autoload]
 EventBus="*res://src/core/EventBus.gd"
@@ -35,9 +38,11 @@ NarrativeEngine="*res://src/narrative/NarrativeEngine.gd"
 window/size/viewport_width=1280
 window/size/viewport_height=720
 window/handheld/orientation=1
+window/handheld/orientation.android=0
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 
 [rendering]
 renderer/rendering_method="mobile"
 textures/canvas_textures/default_texture_filter=0
+textures/vram_compression/import_etc2_astc=true

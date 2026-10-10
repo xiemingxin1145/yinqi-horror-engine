@@ -31,7 +31,7 @@ func inspect_item(item_id: String, action_override: String = "") -> Dictionary:
     if not rule_action.is_empty():
         if action_override != "":
             rule_action["action"] = action_override
-        var case_data := GameState.get_value("case", {})
+        var case_data: Dictionary = GameState.get_value("case", {})
         var rule_result := FolkloreRules.check_rule_violation(rule_action, case_data)
         result["rule_result"] = rule_result
         if bool(rule_result.get("violated", false)):

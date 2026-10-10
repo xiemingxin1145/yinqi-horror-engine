@@ -18,6 +18,7 @@ const INTERACTABLE_FILES := ["res://data/interactables/interactables.example.jso
 const STORYLINE_FILES := ["res://data/storylines/open_storylines.example.json"]
 const MAP_SKIN_FILES := ["res://data/maps/map_skins.example.json"]
 const VIEWPOINT_FILES := ["res://data/viewpoints/viewpoints.example.json"]
+const RETURNING_WATER_FILE := "res://data/returning_water/chapter.json"
 
 func clear() -> void:
     locations.clear()
@@ -30,10 +31,20 @@ func clear() -> void:
     viewpoint_templates.clear()
     loaded_sources.clear()
 
-func load_all_data(force_reload: bool = false) -> void:
+func load_all_data(force_reload: bool = false, returning_water_only: bool = false) -> void:
     if not force_reload and _has_any_data():
         return
     clear()
+    if returning_water_only:
+        load_locations_from_file(RETURNING_WATER_FILE)
+        load_interactables_from_file(RETURNING_WATER_FILE)
+        load_map_skins_from_file(RETURNING_WATER_FILE)
+        load_viewpoints_from_file(RETURNING_WATER_FILE)
+        if not _has_any_data():
+            seed_minimal_demo_data()
+            loaded_sources.append("seed_minimal_demo_data")
+        EventBus.emit_game_event("data_registry_loaded", summary())
+        return
     for path in LOCATION_FILES:
         load_locations_from_file(path)
     for path in NPC_FILES:

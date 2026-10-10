@@ -1,7 +1,7 @@
 extends Node
 
 func inspect_hotspot(hotspot_id: String) -> Dictionary:
-    var result := InteractionController.inspect_item(hotspot_id)
+    var result: Dictionary = InteractionController.inspect_item(hotspot_id)
     result["hotspot_id"] = hotspot_id
     EventBus.emit_game_event("hotspot_inspected", result)
     return result

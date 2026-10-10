@@ -17,6 +17,12 @@ GODOT_BIN=/path/to/Godot_v4.7.2-stable_linux.x86_64 \
 
 输出目录包含 `report.json`、阶段截图及导入/回归/烟雾测试日志。JSON 记录逐项通过情况、标题启动、村口与河桥、五条线索、错误选项与恢复、正确结局、重玩，以及设置保存/重载与音量触控。自动化注入的是 Godot `InputEventScreenTouch` / `InputEventScreenDrag`；这属于**模拟触控**，不是 Android 真机安装、GPU、音频或触摸设备验收。报告中 `real_device_validation` 固定为 `false`。
 
+### 本轮视觉回归与人工试玩（2026-10-10）
+
+- Godot 4.7.2 回归报告：**217/217 checks passed**；覆盖两排底栏位置/高度、村口与河桥关键热点定位标记、既有章节流程、失败恢复、设置保存/重载及正确结局。章节场景 smoke test 退出码为 0。完整报告和日志随本轮证据包保存。
+- 独立桌面模拟试玩使用 1280×720 Xvfb/Godot 窗口及真实鼠标点击，走完村口线索、河桥三类调查物、五线索解锁、错误纸船—回桥重试—正确纸船—保持沉默—结局。它验证的是桌面模拟输入，不是触屏设备。
+- 本轮前后对照均为 1280×720，同一阶段分别保留标题、村口、河桥画面；另保存热点标记、线索卡、纸船菜单、失败恢复及结局截图。**Android Galaxy A53 / Android 15 实机验证仍未完成。**
+
 ## GitHub Actions
 
 - 工作流：[Returning Water Roster Godot Regression](https://github.com/xiemingxin1145/yinqi-horror-engine/actions/workflows/returning-water-regression.yml)

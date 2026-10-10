@@ -19,6 +19,7 @@ const SETTINGS_PATH := "user://returning_water_roster.cfg"
 
 var _background: TextureRect
 var _dim: ColorRect
+var _scene_markers: Control
 var _ui: Control
 var _flash: ColorRect
 var _ambient_player: AudioStreamPlayer
@@ -67,6 +68,12 @@ func _build_layers() -> void:
 	_dim.color = Color(0.015, 0.025, 0.04, 0.24)
 	_dim.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_dim)
+
+	_scene_markers = Control.new()
+	_scene_markers.name = "InvestigationMarkers"
+	_full_rect(_scene_markers)
+	_scene_markers.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(_scene_markers)
 
 	_ui = Control.new()
 	_full_rect(_ui)
@@ -229,8 +236,9 @@ func _show_intro() -> void:
 
 func _show_game() -> void:
 	current_screen = "game"
-	_dim.color = Color(0.015, 0.025, 0.04, 0.20)
+	_dim.color = Color(0.015, 0.025, 0.04, 0.10)
 	_clear_ui()
+	_clear_scene_markers()
 	var viewpoint := ViewpointDirector.get_current_viewpoint()
 	if viewpoint.is_empty():
 		_set_viewpoint("village_gate_front")
@@ -241,6 +249,7 @@ func _show_game() -> void:
 	var objective := "目标：核对录音与村规，再沿雾路前往河桥。" if location_id == "village_gate" else "目标：确认录音里的人，并判断纸船名牌与水流方向。"
 
 	var header := _panel(Rect2(20, 18, 950, 142))
+	header.name = "GameplayHeaderPanel"
 	var header_box := VBoxContainer.new()
 	header_box.add_theme_constant_override("separation", 5)
 	header.add_child(header_box)
@@ -248,53 +257,117 @@ func _show_game() -> void:
 	header_box.add_child(_label(objective, 20))
 	header_box.add_child(_label("核心线索 %d / 5%s" % [required_count, "    ·    " + status_notice if status_notice != "" else ""], 18, HORIZONTAL_ALIGNMENT_LEFT, Color(0.82, 0.86, 0.84)))
 
-	var portrait_frame := _panel(Rect2(990, 18, 270, 330))
-	var portrait := _make_image(HERO_PORTRAIT, Vector2(250, 288), TextureRect.STRETCH_KEEP_ASPECT_COVERED)
-	portrait_frame.add_child(portrait)
-	var caption := _label("陈默  ·  夜班跑腿员", 17, HORIZONTAL_ALIGNMENT_CENTER)
-	portrait_frame.add_child(caption)
+	var hotspots: Array = ViewpointDirector.get_current_hotspots()
+	_add_investigation_markers(current_viewpoint_id, hotspots)
 
-	var action_panel := _panel(Rect2(20, 462, 1240, 238))
+	var action_panel := _panel(Rect2(20, 558, 1240, 142), 0.82)
+	action_panel.name = "GameplayActionPanel"
 	var stack := VBoxContainer.new()
-	stack.add_theme_constant_override("separation", 8)
+	stack.add_theme_constant_override("separation", 4)
 	action_panel.add_child(stack)
 	var navigation := HBoxContainer.new()
-	navigation.add_theme_constant_override("separation", 8)
+	navigation.add_theme_constant_override("separation", 6)
 	stack.add_child(navigation)
 	navigation.add_child(_button("◀ 左看", Callable(self, "_turn_left"), 52))
 	navigation.add_child(_button("右看 ▶", Callable(self, "_turn_right"), 52))
 	navigation.add_child(_button("线索簿 %d/5" % required_count, Callable(self, "_show_journal").bind("game"), 52))
 	navigation.add_child(_button("设置", Callable(self, "_show_settings"), 52))
 
+	if location_id == "village_gate":
+		var gate_ready := found_clues.has("microphone_drowning_audio") and found_clues.has("red_painted_rule_three")
+		var route_button := _button("沿雾路前往河桥", Callable(self, "_move_to_bridge"), 52)
+		route_button.disabled = not gate_ready
+		navigation.add_child(route_button)
+	else:
+		navigation.add_child(_button("回到村口", Callable(self, "_return_to_gate"), 52))
+		var boat_button := _button("查看三只纸船", Callable(self, "open_boat_table"), 52)
+		boat_button.disabled = not has_all_core_clues()
+		navigation.add_child(boat_button)
+
 	var hotspots_row := HBoxContainer.new()
 	hotspots_row.add_theme_constant_override("separation", 8)
 	stack.add_child(hotspots_row)
-	var hotspots: Array = ViewpointDirector.get_current_hotspots()
 	if hotspots.is_empty():
 		hotspots_row.add_child(_label("灯位暂时没有可调查物；可查看左右桥栏与桥面。", 18))
 	else:
 		for item in hotspots:
 			var hotspot_id := str(item.get("id", ""))
 			var item_label := str(item.get("name", hotspot_id))
-			hotspots_row.add_child(_button("调查 · " + item_label, Callable(self, "inspect_hotspot").bind(hotspot_id), 56))
+			var inspect_button := _button("调查 · " + item_label, Callable(self, "inspect_hotspot").bind(hotspot_id), 52)
+			_style_investigation_button(inspect_button)
+			hotspots_row.add_child(inspect_button)
 
-	var route_row := HBoxContainer.new()
-	route_row.add_theme_constant_override("separation", 8)
-	stack.add_child(route_row)
-	if location_id == "village_gate":
-		var gate_ready := found_clues.has("microphone_drowning_audio") and found_clues.has("red_painted_rule_three")
-		var route_button := _button("沿雾路前往河桥", Callable(self, "_move_to_bridge"), 56)
-		route_button.disabled = not gate_ready
-		route_row.add_child(route_button)
-		if not gate_ready:
-			route_row.add_child(_label("先调查录音与被涂掉的村规；断碑为可选线索。", 18))
-	else:
-		route_row.add_child(_button("回到村口", Callable(self, "_return_to_gate"), 56))
-		var boat_button := _button("查看三只纸船", Callable(self, "open_boat_table"), 56)
-		boat_button.disabled = not has_all_core_clues()
-		route_row.add_child(boat_button)
-		if not has_all_core_clues():
-			route_row.add_child(_label("五类核心线索齐备后才开放判断（当前 %d/5）。" % required_count, 18))
+
+func _clear_scene_markers() -> void:
+	if not is_instance_valid(_scene_markers):
+		return
+	for child in _scene_markers.get_children():
+		child.queue_free()
+
+
+func _add_investigation_markers(viewpoint_id: String, hotspots: Array) -> void:
+	var positions: Dictionary = {
+		"village_gate_front": {
+			"broken_boundary_stone": Vector2(160, 292),
+			"village_notice_board": Vector2(1150, 242)
+		},
+		"village_gate_left": {"broken_boundary_stone": Vector2(330, 360)},
+		"village_gate_right": {"qingqing_microphone": Vector2(188, 455)},
+		"river_bridge_rail": {"oil_soaked_white_cloth": Vector2(555, 390)},
+		"river_bridge_ground": {
+			"muddy_grass_shoes": Vector2(670, 418),
+			"student_id_necklace": Vector2(874, 538)
+		}
+	}
+	var viewpoint_positions: Dictionary = positions.get(viewpoint_id, {})
+	for item in hotspots:
+		var hotspot_id := str(item.get("id", ""))
+		if not viewpoint_positions.has(hotspot_id):
+			continue
+		var center: Vector2 = viewpoint_positions[hotspot_id]
+		var marker := Panel.new()
+		marker.position = center - Vector2(15, 15)
+		marker.size = Vector2(30, 30)
+		marker.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var style := StyleBoxFlat.new()
+		style.bg_color = Color(1.0, 0.72, 0.30, 0.20)
+		style.border_color = Color(1.0, 0.82, 0.48, 0.94)
+		style.border_width_left = 2
+		style.border_width_top = 2
+		style.border_width_right = 2
+		style.border_width_bottom = 2
+		style.corner_radius_top_left = 15
+		style.corner_radius_top_right = 15
+		style.corner_radius_bottom_left = 15
+		style.corner_radius_bottom_right = 15
+		style.shadow_color = Color(1.0, 0.62, 0.20, 0.32)
+		style.shadow_size = 7
+		marker.add_theme_stylebox_override("panel", style)
+		_scene_markers.add_child(marker)
+
+
+func _style_investigation_button(button: Button) -> void:
+	button.add_theme_color_override("font_color", Color(1.0, 0.92, 0.74))
+	button.add_theme_color_override("font_hover_color", Color(1.0, 0.98, 0.86))
+	var normal := StyleBoxFlat.new()
+	normal.bg_color = Color(0.21, 0.17, 0.10, 0.98)
+	normal.border_color = Color(0.94, 0.72, 0.39, 0.92)
+	normal.border_width_left = 1
+	normal.border_width_top = 1
+	normal.border_width_right = 1
+	normal.border_width_bottom = 1
+	normal.corner_radius_top_left = 8
+	normal.corner_radius_top_right = 8
+	normal.corner_radius_bottom_left = 8
+	normal.corner_radius_bottom_right = 8
+	var hover := normal.duplicate() as StyleBoxFlat
+	hover.bg_color = Color(0.31, 0.25, 0.14, 1.0)
+	var pressed := normal.duplicate() as StyleBoxFlat
+	pressed.bg_color = Color(0.14, 0.12, 0.08, 1.0)
+	button.add_theme_stylebox_override("normal", normal)
+	button.add_theme_stylebox_override("hover", hover)
+	button.add_theme_stylebox_override("pressed", pressed)
+	button.add_theme_stylebox_override("focus", hover)
 
 
 func inspect_hotspot(hotspot_id: String) -> bool:
@@ -899,13 +972,13 @@ func _make_image(path: String, min_size: Vector2, stretch: TextureRect.StretchMo
 	return image
 
 
-func _panel(rect: Rect2) -> PanelContainer:
+func _panel(rect: Rect2, background_alpha: float = 0.92) -> PanelContainer:
 	var panel := PanelContainer.new()
 	panel.position = rect.position
 	panel.size = rect.size
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.025, 0.045, 0.06, 0.92)
+	style.bg_color = Color(0.025, 0.045, 0.06, background_alpha)
 	style.border_color = Color(0.52, 0.62, 0.62, 0.65)
 	style.border_width_left = 1
 	style.border_width_top = 1

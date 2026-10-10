@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-**构建候选版已完成；Godot 端到端自测通过，Android APK 已导出并签名。实机安装及目标手机全流程尚未验证，因此不标记为最终验收通过。**
+**视觉复核候选版已完成：Godot 自动回归、Xvfb 鼠标模拟完整流程及 Android APK 构建/签名校验通过。实体 Android 手机安装及目标机型全流程尚未验证，因此不标记为最终实机验收通过。**
 
 - 基线：`main`，起始提交 `22e34022f3e4576b4b027055c90ecb8bb5a66d91`。
 - 独占工作分支：`feature/returning-water-roster-android`。
@@ -44,6 +44,13 @@
 - 成功后使用散雾退场图并停止两路音频，写入章节完成标记；
 - 回标题/重玩清除章节状态但保留设置。
 
+### 视觉质量复核与桌面模拟试玩（2026-10-10）
+
+- 降低了游戏阶段全屏压暗程度；在麦克风、村规牌、白布、草鞋和学生证热点上显示轻量暖色定位标记；底部操作收拢为较薄的半透明两排布局，调查按钮提高文字与背景的对比度。
+- Godot 4.7.2 / Xvfb 软件渲染 1280×720 下，章节触控回归结果为 **217/217**，新增检查覆盖底栏位置/高度及多个视角的热点标记；章节主场景 smoke test 退出码为 0。
+- 另以桌面窗口的实际鼠标输入完整试玩：标题与开场、村口村规及录音、河桥白布/脚印/学生证、五条线索齐备、三只纸船选择、故意错选后的线索保留与重试、正确放船及“保持沉默”成功结局均通过。截图为 Godot/Xvfb 桌面模拟渲染，不是实体手机测试。
+- **Galaxy A53 / Android 15 实机安装、触控、GPU 与音频表现仍未验证；本轮不作手机验收通过的表述。**
+
 实际测试命令：
 
 ```bash
@@ -64,7 +71,7 @@ godot --headless --path . --scene res://scenes/ReturningWaterRoster.tscn --quit-
 godot --headless --path . --export-debug "Android APK" build/android/yinqi-huishui-0.1.0-debug.apk
 ```
 
-- 本次最终导出进程退出码：`0`；APK 文件：`build/android/yinqi-huishui-0.1.0-debug.apk`；大小：`42,172,183` 字节（42.17 MB / 40.22 MiB）。
+- 本轮视觉候选 APK 导出进程退出码：`0`；文件：`build/android/yinqi-huishui-0.1.0-debug.apk`；大小：`42,172,183` 字节（42.17 MB / 40.22 MiB）；SHA-256：`1204c4cdba75f26f02a8b14b81b9f702c7877e6e1eea87f8632778a2b8057768`。
 - `apksigner` 确认 APK Signature Scheme v2、v3 签名通过；`aapt2` 二进制 Manifest 显示应用 ID `com.xiemingxin1145.yinqi_huishui`、min SDK 24、target SDK 36、`debuggable=true`，标签为“阴契：回水名册”。
 - Manifest 没有任何 `<uses-permission>` 条目（不请求网络、录音、振动或唤醒权限）。Manifest 中 AndroidX ProfileInstallReceiver 的 `android.permission.DUMP` 是组件访问保护属性，不是应用申请的用户权限。
 - 包内检查确认 Android 启动资源为 `ReturningWaterRoster.tscn`，只包含 `data/returning_water/chapter.json` 与本章允许清单内的 15 项导入资源（七张 WebP 背景、角色/纸船、三段音频、中文字体及两档图标）；未打包老宅/戏台/祠堂数据、旧场景、旧目录占位图或未选中的中间美术稿。

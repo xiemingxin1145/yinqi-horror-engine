@@ -20,6 +20,7 @@ GODOT_BIN=/path/to/Godot_v4.7.2-stable_linux.x86_64 \
 ## GitHub Actions
 
 - 工作流：[Returning Water Roster Godot Regression](https://github.com/xiemingxin1145/yinqi-horror-engine/actions/workflows/returning-water-regression.yml)
+- 成功运行（提交 `8881e42`）：[GitHub Actions run #38014262801](https://github.com/xiemingxin1145/yinqi-horror-engine/actions/runs/38014262801)
 - PR 检查：[PR #1 checks](https://github.com/xiemingxin1145/yinqi-horror-engine/pull/1/checks)
 - CI 使用 Godot 4.7.2、Xvfb 与 Mesa 软件渲染；失败退出码会使 `Godot 4.7.2 gameplay and scene regression` 作业失败。每次运行上传 JSON、截图与日志 artifact。
 - 仓库当前未设置 `main` 分支保护。按本次协作要求，不修改分支保护或权限；因此该作业会在 PR 检查中明确呈现失败，但 GitHub 是否强制阻止合并仍取决于仓库外部的分支规则配置。
